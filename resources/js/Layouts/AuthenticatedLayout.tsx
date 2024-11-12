@@ -1,188 +1,121 @@
-import { AppSidebar } from '@/Components/app-sidebar';
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { SidebarProvider, SidebarTrigger } from '@/Components/ui/sidebar';
-import { Link, usePage } from '@inertiajs/react';
-import { PropsWithChildren, ReactNode, useState } from 'react';
+import { PropsWithChildren } from "react";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/Components/ui/accordion";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/Components/ui/dropdown-menu";
+import { router } from "@inertiajs/react";
 
-export default function Authenticated({
-    header,
-    children,
-}: PropsWithChildren<{ header?: ReactNode }>) {
-    const user = usePage().props.auth.user;
+interface AuthenticatedLayoutProps extends PropsWithChildren {}
 
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+export default function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
 
-    return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="border-b border-gray-100 bg-white">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 justify-between">
-                        <div className="flex">
-                            <div className="flex shrink-0 items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
-                                </Link>
-                            </div>
+  return (
+    <div className="flex h-screen bg-gray-100 text-gray-800">
+        {/* Sidebar */}
+        <aside className="w-64 bg-gray-800 text-white flex flex-col p-4">
+            <h2 className="text-2xl font-bold mb-6">Attendance</h2>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Dashboard
-                                </NavLink>
-                            </div>
-                        </div>
+            <ul className="space-y-4">
+                {/* Dashboard */}
+                <li onClick={() => route('/dashboard')} className="cursor-pointer p-2 rounded hover:bg-gray-700">
+                    Dashboard
+                </li>
 
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <div className="relative ms-3">
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
-                                            >
-                                                {user.name}
+                {/* Schedules */}
+                <li onClick={() => route('/schedules')} className="cursor-pointer p-2 rounded hover:bg-gray-700">
+                    Schedules
+                </li>
 
-                                                <svg
-                                                    className="-me-0.5 ms-2 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </Dropdown.Trigger>
+                {/* Classes Accordion */}
+                <Accordion type="multiple" className="w-full">
+                    <AccordionItem value="classes">
+                        <AccordionTrigger className="p-2 rounded hover:bg-gray-700">Classes</AccordionTrigger>
+                        <AccordionContent>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger className="text-sm p-2 w-full text-left">Units</DropdownMenuTrigger>
+                                <DropdownMenuContent className="bg-gray-700">
+                                    <DropdownMenuItem onClick={() => route('/units/1')}>Unit 1</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => route('/units/2')}>Unit 2</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
 
-                                    <Dropdown.Content>
-                                        <Dropdown.Link
-                                            href={route('profile.edit')}
-                                        >
-                                            Profile
-                                        </Dropdown.Link>
-                                        <Dropdown.Link
-                                            href={route('logout')}
-                                            method="post"
-                                            as="button"
-                                        >
-                                            Log Out
-                                        </Dropdown.Link>
-                                    </Dropdown.Content>
-                                </Dropdown>
-                            </div>
-                        </div>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger className="text-sm p-2 w-full text-left">Cohorts & Class Lists</DropdownMenuTrigger>
+                                <DropdownMenuContent className="bg-gray-700">
+                                    <DropdownMenuItem onClick={() => route('/cohorts/1')}>Cohort 1</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => route('/cohorts/2')}>Cohort 2</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
 
-                        <div className="-me-2 flex items-center sm:hidden">
-                            <button
-                                onClick={() =>
-                                    setShowingNavigationDropdown(
-                                        (previousState) => !previousState,
-                                    )
-                                }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
-                            >
-                                <svg
-                                    className="h-6 w-6"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        className={
-                                            !showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        className={
-                                            showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
+                {/* Reports */}
+                <li onClick={() => route('/reports')} className="cursor-pointer p-2 rounded hover:bg-gray-700">
+                    Reports
+                </li>
+
+                {/* School Accordion */}
+                <Accordion type="multiple" className="w-full">
+                    <AccordionItem value="school">
+                        <AccordionTrigger className="p-2 rounded hover:bg-gray-700">School</AccordionTrigger>
+                        <AccordionContent>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger className="text-sm p-2 w-full text-left">Programs</DropdownMenuTrigger>
+                                <DropdownMenuContent className="bg-gray-700">
+                                    <DropdownMenuItem onClick={() => route('/programs/1')}>Program 1</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => route('/programs/2')}>Program 2</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
+
+                {/* Profile */}
+                <li onClick={() => route('/profile')} className="cursor-pointer p-2 rounded hover:bg-gray-700">
+                    My Profile
+                </li>
+
+                {/* Logout */}
+                <li onClick={() => {
+                    router.post('/logout')
+                }} className="cursor-pointer p-2 rounded hover:bg-gray-700">
+                    Logout
+                </li>
+            </ul>
+        </aside>
+
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col">
+            {/* Top Navbar */}
+            <header className="w-full bg-white p-4 shadow flex justify-between items-center">
+                <div className="flex items-center space-x-2">
+                    <img src="/images/favicon.png" alt="App Logo" className="h-8" />
+                    <span className="font-semibold text-xl">Attendance</span>
                 </div>
 
-                <div
-                    className={
-                        (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
-                    }
-                >
-                    <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
+                {/* User Profile Menu */}
+                <DropdownMenu>
+                    <DropdownMenuTrigger className="cursor-pointer">
+                        <img src="/images/avatar.jpg" alt="User Icon" className="h-8 rounded-full" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="bg-gray-700">
+                        <DropdownMenuItem onClick={() => route('/profile')}>Profile</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => {
+                            router.post('/logout')
+                        }}>Logout</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </header>
 
-                    <div className="border-t border-gray-200 pb-1 pt-4">
-                        <div className="px-4">
-                            <div className="text-base font-medium text-gray-800">
-                                {user.name}
-                            </div>
-                            <div className="text-sm font-medium text-gray-500">
-                                {user.email}
-                            </div>
-                        </div>
+            {/* Page Content */}
+            <main className="flex-1 overflow-y-auto p-6 bg-gray-100">
+                {children}
+            </main>
 
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                method="post"
-                                href={route('logout')}
-                                as="button"
-                            >
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
-            {header && (
-                <header className="bg-white shadow">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        {header}
-                    </div>
-                </header>
-            )}
-
-            <SidebarProvider>
-                <AppSidebar />
-                <main>
-                    <SidebarTrigger />
-                    {children}
-                </main>
-            </SidebarProvider>
-
+            {/* Footer */}
+            <footer className="bg-white p-4 shadow text-center text-gray-600">
+                &copy; {new Date().getFullYear()} Attendance. All rights reserved.
+            </footer>
         </div>
-    );
+    </div>
+  );
 }

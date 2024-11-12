@@ -95,7 +95,7 @@ export default function AuthenticatedLayout({ children }: AuthenticatedLayoutPro
                 {/* User Profile Menu */}
                 <DropdownMenu>
                     <DropdownMenuTrigger className="cursor-pointer">
-                        <img src="/images/avatar.jpg" alt="User Icon" className="h-8 rounded-full" />
+                        <img src="/images/avatar.png" alt="User Icon" className="h-8 rounded-full" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-gray-700">
                         <DropdownMenuItem onClick={() => route('/profile')}>Profile</DropdownMenuItem>

@@ -1,7 +1,9 @@
+import { AppSidebar } from '@/Components/app-sidebar';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import { SidebarProvider, SidebarTrigger } from '@/Components/ui/sidebar';
 import { Link, usePage } from '@inertiajs/react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 
@@ -173,7 +175,14 @@ export default function Authenticated({
                 </header>
             )}
 
-            <main>{children}</main>
+            <SidebarProvider>
+                <AppSidebar />
+                <main>
+                    <SidebarTrigger />
+                    {children}
+                </main>
+            </SidebarProvider>
+
         </div>
     );
 }

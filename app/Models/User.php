@@ -46,4 +46,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function userSchools()
+    {
+        return $this->hasMany(UserSchool::class, 'user_id', 'id');
+    }
+
+    public function schools()
+    {
+        return $this->hasManyThrough(School::class, UserSchool::class, 'user_id', 'id', 'id', 'school_id');
+    }
+
+    public function unitLecturers()
+    {
+        return $this->hasMany(UnitLecturer::class, 'lecturer_id', 'id');
+    }
+
+    public function units()
+    {
+        return $this->hasManyThrough(Unit::class, UnitLecturer::class, 'lecturer_id', 'id', 'id', 'unit_id');
+    }
 }

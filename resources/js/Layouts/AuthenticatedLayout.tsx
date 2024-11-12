@@ -93,7 +93,13 @@ export default function AuthenticatedLayout({ fullName, children }: { fullName: 
         bg-white border-r border-gray-200`}>
         <div className="h-full px-3 py-4 overflow-y-auto">
           <NavItem icon={<LayoutDashboard className="w-5 h-5" />} label="Dashboard" active />
-          <NavItem icon={<Calendar className="w-5 h-5" />} label="Schedule" />
+            <Link
+                href={route('schedule')}
+                className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors text-gray-600 hover:bg-gray-200"
+            >
+                <Calendar className="w-5 h-5" />
+                Schedule
+            </Link>
             <Link
                 href={route('profile.edit')}
                 className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors text-gray-600 hover:bg-gray-200"

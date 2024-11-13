@@ -140,6 +140,14 @@ export default function AuthenticatedLayout({ fullName, children }: { fullName: 
                         active={activeProgram === program.id}
                         onClick={() => setActiveProgram(activeProgram === program.id ? null : program.id)}
                       />
+                      <Link
+                        href={route('program')}
+                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${ isActive('program') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-200'}`}
+                        >
+                            <BookOpen className="w-4 h-4" />
+                            <span className="flex-1 text-left">{program.name}</span>
+                            <ChevronRight className="w-4 h-4" />
+                        </Link>
 
                       {activeProgram === program.id && (
                         <div className="ml-4 mt-2 space-y-1">

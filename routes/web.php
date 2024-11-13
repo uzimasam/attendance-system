@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\UnitController;
 use Illuminate\Foundation\Application;
@@ -28,6 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance');
     Route::get('/unit', [UnitController::class, 'index'])->name('unit');
+    Route::get('/program', [ProgramController::class, 'index'])->name('program');
 });
 
 require __DIR__.'/auth.php';

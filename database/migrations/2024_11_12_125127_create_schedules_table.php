@@ -21,6 +21,7 @@ return new class extends Migration
             $table->time('end_time');
             $table->string('venue');
             $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

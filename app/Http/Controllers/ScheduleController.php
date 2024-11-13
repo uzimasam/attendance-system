@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Schedule;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ScheduleController extends Controller
 {
@@ -12,7 +13,11 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        //
+        // render view with Inertia to display all schedules
+        $schedules = Schedule::with('cohort')->with('unit')->get();
+        return Inertia::render('Schedule/Index', [
+            'schedules' => $schedules
+        ]);
     }
 
     /**

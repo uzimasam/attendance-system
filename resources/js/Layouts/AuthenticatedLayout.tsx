@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Menu, LayoutDashboard, Calendar, UserCircle, LogOut, School, BookOpen, Users, ChevronRight } from 'lucide-react';
 import axios from 'axios';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -35,6 +35,8 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, active, hasDropdown, onC
 );
 
 export default function AuthenticatedLayout({ fullName, children }: { fullName: string; children: React.ReactNode }) {
+    const { url } = usePage();
+    const isActive = (routeName: string) => route().current(routeName);
     const userName = fullName;
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [activeSchool, setActiveSchool] = useState<string | null>(null);
@@ -92,17 +94,23 @@ export default function AuthenticatedLayout({ fullName, children }: { fullName: 
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         bg-white border-r border-gray-200`}>
         <div className="h-full px-3 py-4 overflow-y-auto">
-          <NavItem icon={<LayoutDashboard className="w-5 h-5" />} label="Dashboard" active />
+            <Link
+                href={route('dashboard')}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${ isActive('dashboard') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-200'}`}
+             >
+                <LayoutDashboard className="w-5 h-5" />
+                Dashboard
+            </Link>
             <Link
                 href={route('schedule')}
-                className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors text-gray-600 hover:bg-gray-200"
+                className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${ isActive('schedule') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-200'}`}
             >
                 <Calendar className="w-5 h-5" />
                 Schedule
             </Link>
             <Link
                 href={route('profile.edit')}
-                className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors text-gray-600 hover:bg-gray-200"
+                className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${ isActive('profile.edit') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-200'}`}
             >
                 <UserCircle className="w-5 h-5" />
                 My Profile

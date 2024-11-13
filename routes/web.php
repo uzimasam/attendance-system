@@ -3,6 +3,7 @@
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\UnitController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,6 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance');
+    Route::get('/unit', [UnitController::class, 'index'])->name('unit');
 });
 
 require __DIR__.'/auth.php';

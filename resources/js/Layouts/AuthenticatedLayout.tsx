@@ -145,11 +145,13 @@ export default function AuthenticatedLayout({ fullName, children }: { fullName: 
                         <div className="ml-4 mt-2 space-y-1">
                           {program.units.map(unit => (
                             <div key={unit.id}>
-                              <NavItem
-                                icon={<Users className="w-4 h-4" />}
-                                label={unit.name}
-                                hasDropdown
-                              />
+                              <Link
+                                href={route('unit')}
+                                className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${ isActive('unit') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-200'}`}
+                                >
+                                    <Users className="w-4 h-4" />
+                                    {unit.name}
+                                </Link>
                             </div>
                           ))}
                         </div>

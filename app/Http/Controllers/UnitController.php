@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Unit;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class UnitController extends Controller
 {
@@ -12,7 +13,9 @@ class UnitController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('Unit/Index', [
+            'units' => Unit::all(),
+        ]);
     }
 
     /**

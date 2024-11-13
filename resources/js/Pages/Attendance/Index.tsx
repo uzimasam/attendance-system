@@ -2,6 +2,7 @@ import React from 'react';
 import { Calendar, Users, BookOpen, BarChart3 } from 'lucide-react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
+import AttendancePage from './Partials/AttendancePage';
 
 interface AuthProps {
   readonly auth: {
@@ -16,39 +17,9 @@ function App({
 }: AuthProps) {
   return (
     <>
-    <Head title="Dashboard" />
+    <Head title="Schedule" />
     <AuthenticatedLayout fullName={auth.user.name}>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <DashboardCard
-          title="Today's Classes"
-          value="3"
-          icon={<Calendar className="w-6 h-6 text-blue-600" />}
-          trend="+1 from yesterday"
-        />
-        <DashboardCard
-          title="Total Students"
-          value="245"
-          icon={<Users className="w-6 h-6 text-green-600" />}
-          trend="+12 this semester"
-        />
-        <DashboardCard
-          title="Active Units"
-          value="6"
-          icon={<BookOpen className="w-6 h-6 text-purple-600" />}
-          trend="2 completing soon"
-        />
-        <DashboardCard
-          title="Avg. Attendance"
-          value="87%"
-          icon={<BarChart3 className="w-6 h-6 text-orange-600" />}
-          trend="+2.5% this week"
-        />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <UpcomingClasses />
-        <RecentAttendance />
-      </div>
+        <AttendancePage />
     </AuthenticatedLayout>
     </>
   );

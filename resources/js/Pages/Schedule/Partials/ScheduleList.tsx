@@ -1,6 +1,7 @@
 import React from 'react';
 import { Clock, MapPin, Users } from 'lucide-react';
 import { Schedule } from '@/types';
+import { Link } from '@inertiajs/react';
 
 interface ScheduleListProps {
   schedules: Schedule[];
@@ -48,9 +49,14 @@ export default function ScheduleList({ schedules, selectedDate }: ScheduleListPr
                 </div>
               </div>
 
-              <button className="mt-4 w-full px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                Start Attendance
-              </button>
+                <div className="flex flex-col items-center">
+                <Link
+                    href={route('attendance')}
+                    className="mt-4 w-full px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                >
+                    Start Attendance
+                </Link>
+                </div>
             </div>
           ))}
         </div>

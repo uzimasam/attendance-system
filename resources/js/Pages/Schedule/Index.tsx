@@ -1,8 +1,8 @@
 import React from 'react';
 import { Calendar, Users, BookOpen, BarChart3 } from 'lucide-react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
-import SchedulePage from './Partisals/SchedulePage';
+import { Head, Link } from '@inertiajs/react';
+import SchedulePage from './Partials/SchedulePage';
 
 interface AuthProps {
   readonly auth: {
@@ -75,9 +75,9 @@ const UpcomingClasses = () => (
           </div>
           <div className="text-right">
             <p className="text-sm font-medium text-gray-900">{session.time}</p>
-            <button className="mt-2 px-4 py-2 text-sm font-medium bg-gray-200 rounded-lg text-gray-800 hover:bg-gray-400 transition-colors">
-              Start Attendance
-            </button>
+            <Link href={route('attendance')} className="mt-2 px-4 py-2 text-sm font-medium bg-gray-200 rounded-lg text-gray-800 hover:bg-gray-400 transition-colors">
+                Start Attendance
+            </Link>
           </div>
         </div>
       ))}

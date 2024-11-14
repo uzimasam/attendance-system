@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, LayoutDashboard, Calendar, UserCircle, LogOut, School, BookOpen, Users, ChevronRight } from 'lucide-react';
+import { Menu, LayoutDashboard, Calendar, UserCircle, LogOut, School, BookOpen, Users, ChevronRight, Settings2Icon, HomeIcon } from 'lucide-react';
 import axios from 'axios';
 import { Link, usePage } from '@inertiajs/react';
 
@@ -51,6 +51,7 @@ export default function AuthenticatedLayout({ fullName, children }: { fullName: 
         {
           id: '1',
           name: 'Computer Science',
+            code: 'CS',
           units: [
             { id: '1', name: 'Programming 101', cohorts: ['Year 1 2024', 'Year 2 2023'] },
             { id: '2', name: 'Data Structures', cohorts: ['Year 2 2023'] }
@@ -109,6 +110,13 @@ export default function AuthenticatedLayout({ fullName, children }: { fullName: 
                 Schedule
             </Link>
             <Link
+                href={route('setup')}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${ isActive('setup') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-200'}`}
+            >
+                <Settings2Icon className="w-5 h-5" />
+                Setup
+            </Link>
+            <Link
                 href={route('profile.edit')}
                 className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${ isActive('profile.edit') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-200'}`}
             >
@@ -140,17 +148,16 @@ export default function AuthenticatedLayout({ fullName, children }: { fullName: 
                         active={activeProgram === program.id}
                         onClick={() => setActiveProgram(activeProgram === program.id ? null : program.id)}
                       />
-                      <Link
-                        href={route('program')}
-                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${ isActive('program') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-200'}`}
-                        >
-                            <BookOpen className="w-4 h-4" />
-                            <span className="flex-1 text-left">{program.name}</span>
-                            <ChevronRight className="w-4 h-4" />
-                        </Link>
 
                       {activeProgram === program.id && (
                         <div className="ml-4 mt-2 space-y-1">
+                        <Link
+                          href={route('program')}
+                          className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${ isActive('unit') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-200'}`}
+                          >
+                            <HomeIcon className="w-4 h-4" />
+                              {program.code} Overview
+                          </Link>
                           {program.units.map(unit => (
                             <div key={unit.id}>
                               <Link

@@ -18,6 +18,12 @@ class ProgramController extends Controller
         ]);
     }
 
+    public function setup()
+    {
+        return Inertia::render('Setup/Index', [
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */

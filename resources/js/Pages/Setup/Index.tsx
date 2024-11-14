@@ -1,7 +1,7 @@
 import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
-import UnitPage from './Partials/UnitPage';
+import SetupPage from './Partials/SetupPage';
 
 interface AuthProps {
   readonly auth: {
@@ -18,7 +18,7 @@ function App({
     <>
     <Head title="Schedule" />
     <AuthenticatedLayout fullName={auth.user.name}>
-        <UnitPage />
+        <SetupPage />
     </AuthenticatedLayout>
     </>
   );

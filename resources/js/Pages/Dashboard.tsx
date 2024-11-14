@@ -103,8 +103,8 @@ const UpcomingClasses = () => (
             <p className="text-sm text-gray-600">{session.venue}</p>
           </div>
           <div className="text-right">
-            <p className="text-sm font-medium text-gray-900">{session.time}</p>
-            <Link href={route('attendance')} className="mt-2 px-4 py-2 text-sm font-medium bg-gray-200 rounded-lg text-gray-800 hover:bg-gray-400 transition-colors">
+            <p className="mb-2 text-sm font-medium text-gray-900">{session.time}</p>
+            <Link href={route('attendance')} className="mt-2 px-2 py-1  text-sm font-medium bg-gray-200 rounded-lg text-gray-800 hover:bg-gray-400 transition-colors">
                 Start Attendance
             </Link>
           </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\School;
 use Illuminate\Http\Request;
+use Str;
 
 class SchoolController extends Controller
 {
@@ -28,7 +29,18 @@ class SchoolController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // validate the request
+        $request->validate(School::$rules);
+
+        // create a slug from the name
+        $slug = Str::slug($request->name);
+        School::create([
+            "name"=> $request->name,
+            "code"=> $request->code,
+            "slug"=> $slug
+        ]);
+
+        return redirect()->route("setup")->with("success","School created successfully");
     }
 
     /**

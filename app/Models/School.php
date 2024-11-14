@@ -32,6 +32,11 @@ class School extends Model
         'deleted_at' => 'datetime'
     ];
 
+    public static $rules = [
+        'name' => 'required|string',
+        'code' => 'required|string|unique:schools'
+    ];
+
     public function userSchools()
     {
         return $this->hasMany(UserSchool::class, 'school_id', 'id');

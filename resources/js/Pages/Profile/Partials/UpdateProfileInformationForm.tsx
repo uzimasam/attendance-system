@@ -10,17 +10,18 @@ export default function UpdateProfileInformation({
     mustVerifyEmail,
     status,
     className = '',
-}: {
+}: Readonly<{
     mustVerifyEmail: boolean;
     status?: string;
     className?: string;
-}) {
+}>) {
     const user = usePage().props.auth.user;
 
     const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
             name: user.name,
             email: user.email,
+            staff_number: user.staff_number,
         });
 
     const submit: FormEventHandler = (e) => {
@@ -72,6 +73,22 @@ export default function UpdateProfileInformation({
                     />
 
                     <InputError className="mt-2" message={errors.email} />
+                </div>
+
+                <div>
+                    <InputLabel htmlFor="staff_number" value="Staff Number" />
+
+                    <TextInput
+                        id="staff_number"
+                        type="text"
+                        className="mt-1 block w-full"
+                        value={data.staff_number}
+                        onChange={(e) => setData('staff_number', e.target.value)}
+                        required
+                        autoComplete="staff_number"
+                    />
+
+                    <InputError className="mt-2" message={errors.staff_number} />
                 </div>
 
                 {mustVerifyEmail && user.email_verified_at === null && (

@@ -4,6 +4,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\UnitController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/unit', [UnitController::class, 'index'])->name('unit');
     Route::get('/program', [ProgramController::class, 'index'])->name('program');
     Route::get('/setup', [ProgramController::class, 'setup'])->name('setup');
+    Route::post('/school/store', [SchoolController::class, 'store'])->name('school.store');
 });
 
 require __DIR__.'/auth.php';

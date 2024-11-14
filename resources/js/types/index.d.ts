@@ -51,8 +51,6 @@ export interface School {
     id: number;
     name: string;
     code: string;
-    slug: string;
-    status: string;
 }
 
 export interface Student {

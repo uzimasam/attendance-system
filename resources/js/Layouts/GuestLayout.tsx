@@ -7,7 +7,7 @@ export default function Guest({ children }: PropsWithChildren) {
         <div className="flex min-h-screen flex-col items-center pt-6 sm:justify-center sm:pt-0">
             <div className="flex flex-col items-center">
                 <Link href="/">
-                    <ApplicationLogo  />
+                    <ApplicationLogo />
                 </Link>
                 <h1 className="text-xl mt-2
                 font-extrabold">Sign In</h1>

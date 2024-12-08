@@ -34,12 +34,20 @@ class SchoolController extends Controller
 
         // create a slug from the name
         $slug = Str::slug($request->name);
+        $i = 1;
+        while (School::where("slug", $slug)->first()) {
+            $slug = $slug."-".$i;
+            $i++;
+        }
+
+        // create the school
         School::create([
             "name"=> $request->name,
             "code"=> $request->code,
             "slug"=> $slug
         ]);
 
+        // redirect to the setup page
         return redirect()->route("setup")->with("success","School created successfully");
     }
 

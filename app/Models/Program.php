@@ -17,6 +17,8 @@ class Program extends Model
         'name',
         'code',
         'slug',
+        'duration',
+        'semesters',
         'school_id',
         'status'
     ];
@@ -31,6 +33,14 @@ class Program extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime'
+    ];
+
+    public static $rules = [
+        'name' => 'required|string',
+        'code' => 'required|string|unique:programs',
+        'duration' => 'required|integer|min:1',
+        'semesters' => 'required|integer|min:1',
+        'school_id' => 'required|integer|exists:schools,id'
     ];
 
     public function school()

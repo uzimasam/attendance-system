@@ -9,16 +9,34 @@ interface AuthProps {
             readonly name: string;
         };
     };
+    readonly schools: {
+        readonly id: number;
+        readonly name: string;
+        readonly code: string;
+        readonly slug: string;
+        readonly status: string;
+    }[];
+    readonly programs: {
+        readonly id: number;
+        readonly name: string;
+        readonly code: string;
+        readonly duration: number;
+        readonly semesters: number;
+        readonly status: string;
+    }[];
 }
 
 function App({
+    schools,
+    programs,
     auth
 }: AuthProps) {
+
     return (
         <>
             <Head title="Schedule" />
             <AuthenticatedLayout fullName={auth.user.name}>
-                <SetupPage />
+                <SetupPage schools={schools} programs={programs} />
             </AuthenticatedLayout>
         </>
     );

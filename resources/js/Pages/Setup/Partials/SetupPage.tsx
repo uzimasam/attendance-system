@@ -7,7 +7,7 @@ import StudentUpload from './StudentUpload';
 
 type Step = 'school' | 'program' | 'unit' | 'cohort' | 'students';
 
-export default function SetupPage() {
+export default function SetupPage({ schools, programs }: any) {
     const [currentStep, setCurrentStep] = useState<Step>('school');
     const [formData, setFormData] = useState<{
         school: { id: string } | null;
@@ -110,10 +110,8 @@ export default function SetupPage() {
 
                 {/* Form Content */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    {currentStep === 'school' && <SchoolForm onSubmit={handleSchoolSubmit} />}
-                    {currentStep === 'program' && (
-                        <ProgramForm onSubmit={handleProgramSubmit} schoolId={formData.school?.id ?? ''} />
-                    )}
+                    {currentStep === 'school' && <SchoolForm onSubmit={handleSchoolSubmit} schools={schools} />}
+                    {currentStep === 'program' && <ProgramForm onSubmit={handleProgramSubmit} programs={programs} schools={schools} />}
                     {currentStep === 'cohort' && (
                         <CohortForm
                             onSubmit={handleCohortSubmit}

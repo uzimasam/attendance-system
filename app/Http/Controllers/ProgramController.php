@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Program;
+use App\Models\School;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Log;
+use Str;
 
 class ProgramController extends Controller
 {
@@ -21,6 +24,8 @@ class ProgramController extends Controller
     public function setup()
     {
         return Inertia::render('Setup/Index', [
+            'schools' => School::all(),
+            'programs' => Program::all(),
         ]);
     }
 
@@ -37,7 +42,30 @@ class ProgramController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Log::info($request->all());
+        // validate the request
+        $request->validate(Program::$rules);
+
+        // create a slug from the name
+        $slug = Str::slug($request->name);
+        $i = 1;
+        while (Program::where('slug', $slug)->first()) {
+            $slug = $slug.'-'.$i;
+            $i++;
+        }
+
+        // create the program
+        Program::create([
+            'name'=> $request->name,
+            'code'=> $request->code,
+            'slug'=> $slug,
+            'duration'=> $request->duration,
+            'semesters'=> $request->semesters,
+            'school_id'=> $request->school_id
+        ]);
+
+        // redirect to the setup page
+        return redirect()->route('setup')->with('success','Program created successfully');
     }
 
     /**

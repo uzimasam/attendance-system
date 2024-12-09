@@ -121,7 +121,7 @@ export default function AddProgram({ onClose, onSubmit, schools }: AddProgramPro
                         >
                             {schools.map(school => (
                                 <option key={school.id} value={school.id}>
-                                    {school.name} - [{school.code}] {school.id}
+                                    {school.name} - [{school.code}]
                                 </option>
                             ))}
                         </select>

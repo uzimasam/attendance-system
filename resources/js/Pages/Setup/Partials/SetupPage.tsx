@@ -24,8 +24,8 @@ export default function SetupPage({ schools, programs }: any) {
     const steps: { id: Step; label: string; icon: React.ReactNode }[] = [
         { id: 'school', label: 'School Details', icon: <School className="w-5 h-5" /> },
         { id: 'program', label: 'Program', icon: <BookOpen className="w-5 h-5" /> },
-        { id: 'unit', label: 'Units', icon: <BookOpen className="w-5 h-5" /> },
         { id: 'cohort', label: 'Cohort', icon: <Users className="w-5 h-5" /> },
+        { id: 'unit', label: 'Unit', icon: <BookOpen className="w-5 h-5" /> },
         { id: 'students', label: 'Students', icon: <Upload className="w-5 h-5" /> },
     ];
 

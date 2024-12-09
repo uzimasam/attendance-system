@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cohort;
 use App\Models\Program;
 use App\Models\School;
 use Illuminate\Http\Request;
@@ -55,7 +56,7 @@ class ProgramController extends Controller
         }
 
         // create the program
-        Program::create([
+        $program = Program::create([
             'name'=> $request->name,
             'code'=> $request->code,
             'slug'=> $slug,
@@ -63,6 +64,20 @@ class ProgramController extends Controller
             'semesters'=> $request->semesters,
             'school_id'=> $request->school_id
         ]);
+
+        // create the cohorts for the program
+        for ($y = 1; $y <= $program->duration; $y++) {
+            for ($s = 1; $s <= $program->semesters; $s++) {
+                $name = $program->name." - Year ".$y." Sem ".$s;
+                $code = $program->code."-Y".$y."-S".$s;
+                Cohort::create([
+                    'name'=> $name,
+                    'code'=> $code,
+                    'program_id'=> $program->id,
+                    'status'=> 'active'
+                ]);
+            }
+        }
 
         // redirect to the setup page
         return redirect()->route('setup')->with('success','Program created successfully');

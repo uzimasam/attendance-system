@@ -42,24 +42,43 @@ export default function AuthenticatedLayout({ fullName, children }: { fullName: 
     const [activeSchool, setActiveSchool] = useState<string | null>(null);
     const [activeProgram, setActiveProgram] = useState<string | null>(null);
 
-    // Mock data - in real app this would come from API
-    const schools = [
-        {
-            id: '1',
-            name: 'School of Computing',
-            programs: [
-                {
-                    id: '1',
-                    name: 'Computer Science',
-                    code: 'CS',
-                    units: [
-                        { id: '1', name: 'Programming 101', cohorts: ['Year 1 2024', 'Year 2 2023'] },
-                        { id: '2', name: 'Data Structures', cohorts: ['Year 2 2023'] }
-                    ]
-                }
-            ]
-        }
-    ];
+    /*
+            {
+                id: '1',
+                name: 'School of Computing',
+                programs: [
+                    {
+                        id: '1',
+                        name: 'Computer Science',
+                        code: 'CS',
+                        units: [
+                            { id: '1', name: 'Programming 101', cohorts: ['Year 1 2024', 'Year 2 2023'] },
+                            { id: '2', name: 'Data Structures', cohorts: ['Year 2 2023'] }
+                        ]
+                    }
+                ]
+            }
+        */
+    // infer the type of schools from the props
+    interface School {
+        id: string;
+        name: string;
+        programs: Program[] | [];
+    }
+
+    interface Program {
+        id: string;
+        name: string;
+        code: string;
+        units: Unit[] | [];
+    }
+
+    interface Unit {
+        id: string;
+        name: string;
+    }
+    const { props } = usePage();
+    const { schools = []} = props;
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -126,8 +145,7 @@ export default function AuthenticatedLayout({ fullName, children }: { fullName: 
 
                     <div className="my-4 border-t border-gray-200"></div>
 
-                    {/* Schools Section */}
-                    {schools.map(school => (
+                    {Array.isArray(schools) && schools.map((school: School) => (
                         <div key={school.id}>
                             <NavItem
                                 icon={<School className="w-5 h-5" />}
@@ -139,7 +157,7 @@ export default function AuthenticatedLayout({ fullName, children }: { fullName: 
 
                             {activeSchool === school.id && (
                                 <div className="ml-4 mt-2 space-y-1">
-                                    {school.programs.map(program => (
+                                    {Array.isArray(school.programs) && school.programs.map((program: Program) => (
                                         <div key={program.id}>
                                             <NavItem
                                                 icon={<BookOpen className="w-4 h-4" />}
@@ -158,7 +176,7 @@ export default function AuthenticatedLayout({ fullName, children }: { fullName: 
                                                         <HomeIcon className="w-4 h-4" />
                                                         {program.code} Overview
                                                     </Link>
-                                                    {program.units.map(unit => (
+                                                    {program.units.map((unit: Unit) => (
                                                         <div key={unit.id}>
                                                             <Link
                                                                 href={route('unit')}

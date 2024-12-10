@@ -17,8 +17,8 @@ export default function AttendancePage() {
 
     // Mock data - in a real app, this would come from an API
     const mockStudents: Student[] = [
-        { id: 1, registration_number: 'CS/001/2024', first_name: 'Alice', last_name: 'Johnson', email: 'alice@jik.com', phone: '0712345678', status: 'active' },
-        { id: 2, registration_number: 'CS/002/2024', first_name: 'Bob', last_name: 'Smith', email: 'bob@jik.com', phone: '0712345678', status: 'active' },
+        { id: 1, registration_number: 'CS/MG/1578/09/21', first_name: 'Samuel', last_name: 'Uzima', email: 'samueluzima@kabarak.ac.kez', phone: '0712345678', status: 'active' },
+        { id: 2, registration_number: 'BSCSF/MG/2137/09/21', first_name: 'Felix', last_name: 'Masigwa', email: 'bob@jik.com', phone: '0712345678', status: 'active' },
         { id: 3, registration_number: 'CS/003/2024', first_name: 'Charlie', last_name: 'Brown', email: 'browm@jik.com', phone: '0712345678', status: 'active' },
     ];
 

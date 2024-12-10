@@ -3,7 +3,8 @@ import { Users } from 'lucide-react';
 
 interface CohortFormProps {
     readonly onSubmit: (data: any) => void;
-    readonly programId: string;
+    readonly cohortId: string;
+    readonly cohorts: any[];
     readonly units: ReadonlyArray<{
         id: string;
         name: string;
@@ -11,7 +12,7 @@ interface CohortFormProps {
     }>;
 }
 
-export default function CohortForm({ onSubmit, programId, units }: CohortFormProps) {
+export default function CohortForm({ onSubmit, cohortId, cohorts, units }: CohortFormProps) {
     const [formData, setFormData] = useState({
         name: '',
         year: new Date().getFullYear(),
@@ -21,7 +22,7 @@ export default function CohortForm({ onSubmit, programId, units }: CohortFormPro
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit({ ...formData, id: Math.random().toString(), programId });
+        onSubmit({ ...formData, id: Math.random().toString(), cohortId });
     };
 
     const handleUnitToggle = (unitId: string) => {
@@ -42,57 +43,25 @@ export default function CohortForm({ onSubmit, programId, units }: CohortFormPro
                 <h2 className="text-xl font-semibold text-gray-900">Create Cohort</h2>
             </div>
 
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">
-                    Cohort Name
-                </label>
-                <input
-                    type="text"
-                    required
-                    placeholder="e.g., September 2024 Intake"
-                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                    value={formData.name}
-                    onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="year">
-                        Academic Year
+                    <p className="text-sm font-medium my-2 text-gray-600">To get started, please select the cohort you want to setup.<br /> If the cohort is not listed, click the "Add Cohort" button above to add a new cohort.</p>
+                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="cohort">
+                        Select Cohort
                     </label>
                     <select
                         required
                         className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                        value={formData.year}
-                        onChange={e => setFormData(prev => ({ ...prev, year: Number(e.target.value) }))}
+                        value={formData.name}
+                        onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
                     >
-                        {[0, 1, 2].map(offset => {
-                            const year = new Date().getFullYear() + offset;
-                            return (
-                                <option key={year} value={year}>
-                                    {year}
-                                </option>
-                            );
-                        })}
+                        <option value="">Select Cohort</option>
+                        {cohorts.map(cohort => (
+                            <option key={cohort.id} value={cohort.name}>{cohort.name}</option>
+                        ))}
                     </select>
                 </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="semester">
-                        Semester
-                    </label>
-                    <select
-                        required
-                        className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                        value={formData.semester}
-                        onChange={e => setFormData(prev => ({ ...prev, semester: Number(e.target.value) }))}
-                    >
-                        <option value={1}>Semester 1</option>
-                        <option value={2}>Semester 2</option>
-                    </select>
-                </div>
-            </div>
+            </form>
 
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="units">

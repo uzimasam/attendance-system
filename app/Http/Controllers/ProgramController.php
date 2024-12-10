@@ -27,6 +27,7 @@ class ProgramController extends Controller
         return Inertia::render('Setup/Index', [
             'schools' => School::all(),
             'programs' => Program::all(),
+            'cohorts' => Cohort::all()
         ]);
     }
 

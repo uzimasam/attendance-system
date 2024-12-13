@@ -26,9 +26,9 @@ export default function StudentUpload({ onSubmit, cohortId }: StudentUploadProps
         const text = await file.text();
         const rows = text.split('\n');
         const headers = rows[0].split(',');
-
-        if (!headers.includes('regNo') || !headers.includes('name')) {
-            setError('CSV must include "regNo" and "name" columns');
+        console.log(headers);
+        if (!headers.includes('regNo') || !headers.includes('name') || !headers.includes('email')) {
+            setError('CSV must include "regNo", "name", and "email" columns');
             return;
         }
 
@@ -115,7 +115,7 @@ export default function StudentUpload({ onSubmit, cohortId }: StudentUploadProps
                     </button>
                 </p>
                 <p className="text-xs text-gray-500">
-                    CSV should include columns: regNo, name
+                    CSV should include columns: regNo, name, and email
                 </p>
             </div>
 
@@ -144,6 +144,9 @@ export default function StudentUpload({ onSubmit, cohortId }: StudentUploadProps
                                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
                                         Name
                                     </th>
+                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                                        Email
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
@@ -151,6 +154,7 @@ export default function StudentUpload({ onSubmit, cohortId }: StudentUploadProps
                                     <tr key={index}>
                                         <td className="px-4 py-2 text-sm text-gray-900">{student.regNo}</td>
                                         <td className="px-4 py-2 text-sm text-gray-900">{student.name}</td>
+                                        <td className="px-4 py-2 text-sm text-gray-900">{student.email}</td>
                                     </tr>
                                 ))}
                                 {preview.length > 5 && (

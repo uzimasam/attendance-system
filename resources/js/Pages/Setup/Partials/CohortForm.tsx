@@ -28,7 +28,7 @@ export default function CohortForm({ onSubmit, cohortId, cohorts, unit }: Cohort
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <>
             <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 bg-blue-50 rounded-lg">
                     <Users className="w-6 h-6 text-blue-600" />
@@ -55,6 +55,6 @@ export default function CohortForm({ onSubmit, cohortId, cohorts, unit }: Cohort
                     </select>
                 </div>
             </form>
-        </form>
+        </>
     );
 }

@@ -67,7 +67,7 @@ export default function UnitForm({ onSubmit, units, schools }: Readonly<UnitForm
                     >
                         <option value="">Select Unit</option>
                         {units.map(unit => (
-                            <option key={unit.id} value={unit.name}>{unit.name}</option>
+                            <option key={unit.id} value={unit.name}>{unit.name} - {unit.code}</option>
                         ))}
                     </select>
                 </div>

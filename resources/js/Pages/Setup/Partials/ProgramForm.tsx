@@ -6,9 +6,11 @@ interface ProgramFormProps {
     readonly onSubmit: (data: any) => void;
     readonly programs: any[];
     readonly schools: any[];
+    readonly schoolId: string;
 }
 
-export default function ProgramForm({ onSubmit, programs, schools }: Readonly<ProgramFormProps>) {
+export default function ProgramForm({ onSubmit, programs, schools, schoolId }: Readonly<ProgramFormProps>) {
+    programs = programs.filter(program => program.school_id === Number(schoolId));
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
@@ -50,6 +52,7 @@ export default function ProgramForm({ onSubmit, programs, schools }: Readonly<Pr
                     onClose={() => setIsFormOpen(false)}
                     onSubmit={handleAddProgram}
                     schools={schools}
+                    schoolId={schoolId}
                 />
             )}
 

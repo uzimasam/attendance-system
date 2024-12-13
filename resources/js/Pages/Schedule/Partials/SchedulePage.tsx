@@ -47,7 +47,6 @@ export default function SchedulePage() {
 
     const handleScheduleCreate = (schedule: Omit<Schedule, 'id'>) => {
         // In a real app, this would make an API call
-        console.log('Creating schedule:', schedule);
         setIsFormOpen(false);
     };
 

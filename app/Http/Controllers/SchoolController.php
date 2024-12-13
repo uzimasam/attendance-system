@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\School;
+use App\Models\UserSchool;
 use Illuminate\Http\Request;
 use Str;
 
@@ -41,11 +42,20 @@ class SchoolController extends Controller
         }
 
         // create the school
-        School::create([
+        $school = School::create([
             "name"=> $request->name,
             "code"=> $request->code,
             "slug"=> $slug
         ]);
+
+        // link user to the school
+        $existingLink = UserSchool::where("user_id", auth()->user()->id)->where("school_id", $school->id)->first();
+        if (! $existingLink) {
+            UserSchool::create([
+                "user_id"=> auth()->user()->id,
+                "school_id"=> $school->id
+            ]);
+        }
 
         // redirect to the setup page
         return redirect()->route("setup")->with("success","School created successfully");

@@ -6,6 +6,7 @@ use App\Models\Cohort;
 use App\Models\Program;
 use App\Models\School;
 use App\Models\Unit;
+use App\Models\UserSchool;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Log;
@@ -56,6 +57,15 @@ class ProgramController extends Controller
         while (Program::where('slug', $slug)->first()) {
             $slug = $slug.'-'.$i;
             $i++;
+        }
+
+        // link the user to the school
+        $existingLink = UserSchool::where("user_id", auth()->user()->id)->where("school_id", $request->school_id)->first();
+        if (! $existingLink) {
+            UserSchool::create([
+                "user_id"=> auth()->user()->id,
+                "school_id"=> $request->school_id,
+            ]);
         }
 
         // create the program

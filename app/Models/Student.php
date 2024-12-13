@@ -15,10 +15,8 @@ class Student extends Model
 
     protected $fillable = [
         'registration_number',
-        'first_name',
-        'last_name',
+        'name',
         'email',
-        'phone',
         'status'
     ];
 
@@ -32,6 +30,12 @@ class Student extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime'
+    ];
+
+    public static $rules = [
+        'registration_number'=> 'string|required',
+        'name'=> 'string|required',
+        'email'=> 'email|required'
     ];
 
     public function cohortStudents()

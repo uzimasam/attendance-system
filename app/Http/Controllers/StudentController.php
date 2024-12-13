@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Log;
 
 class StudentController extends Controller
 {
@@ -28,7 +29,25 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Log::info("Request: " . json_encode($request->all()));
+        $students = $request->data;
+        foreach ($students as $student) {
+            // check if student exists
+            $existingStudent = Student::where('registration_number', $student['regNo'])->first();
+            if ($existingStudent) {
+                $existingStudent->name = $student['name'];
+                $existingStudent->email = $student['email'];
+                $existingStudent->save();
+            } else {
+                Student::create([
+                    'registration_number' => $student['regNo'],
+                    'name' => $student['name'],
+                    'email' => $student['email']
+                ]);
+            }
+        }
+
+        return redirect()->route('setup')->with('success','Program created successfully');
     }
 
     /**

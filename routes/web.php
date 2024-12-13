@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UnitController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/program/store', [ProgramController::class, 'store'])->name('program.store');
     Route::get('/setup', [ProgramController::class, 'setup'])->name('setup');
     Route::post('/school/store', [SchoolController::class, 'store'])->name('school.store');
+    Route::post('/students/store', [StudentController::class, 'store'])->name('students.store');
 });
 
 require __DIR__.'/auth.php';

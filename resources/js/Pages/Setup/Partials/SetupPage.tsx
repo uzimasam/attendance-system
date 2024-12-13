@@ -122,11 +122,7 @@ export default function SetupPage({ schools, units, programs, cohorts }: any) {
                     {currentStep === 'unit' && <UnitForm onSubmit={handleUnitSubmit} units={units} schools={schools} schoolId={formData.school?.id ?? ''} />}
                     {currentStep === 'program' && <ProgramForm onSubmit={handleProgramSubmit} programs={programs} schools={schools} schoolId={formData.school?.id ?? ''} />}
                     {currentStep === 'cohort' && <CohortForm onSubmit={handleCohortSubmit} cohortId={formData.cohort?.id ?? ''} cohorts={cohorts} unit={formData.unit?.id ?? null} programId={formData.program?.id ?? ''} />}
-                    {currentStep === 'students' && (
-                        <StudentUpload
-                            onSubmit={handleStudentsSubmit}
-                            cohortId={formData.cohort?.id ?? ''}
-                        />
+                    {currentStep === 'students' && (<StudentUpload onSubmit={handleStudentsSubmit} cohortId={formData.cohort?.id ?? ''} />
                     )}
                 </div>
             </div>

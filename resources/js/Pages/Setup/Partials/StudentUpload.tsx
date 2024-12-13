@@ -229,7 +229,7 @@ export default function StudentUpload({ onSubmit, cohortId }: StudentUploadProps
                     disabled={processing}
                     className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    {processing ? 'Uploading...' : `Upload ${preview.length} Students`}
+                    {processing ? 'Uploading...' : `Upload ${preview.length} Students & Finish`}
                 </button>
             )}
         </form>

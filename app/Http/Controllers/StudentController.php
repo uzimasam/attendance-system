@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CohortStudent;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Log;
@@ -45,9 +46,19 @@ class StudentController extends Controller
                     'email' => $student['email']
                 ]);
             }
+            // setup cohort student
+            $cohortId = $student['cohortId'];
+            $setStudent = Student::where('registration_number', $student['regNo'])->first();
+            $existingCohortStudent = CohortStudent::where('cohort_id', $cohortId)->where('student_id', $setStudent->id)->first();
+            if (!$existingCohortStudent) {
+                CohortStudent::create([
+                    'cohort_id' => $cohortId,
+                    'student_id' => $setStudent->id
+                ]);
+            }
         }
 
-        return redirect()->route('setup')->with('success','Program created successfully');
+        return redirect()->route('schedule')->with('success','Setup successful');
     }
 
     /**

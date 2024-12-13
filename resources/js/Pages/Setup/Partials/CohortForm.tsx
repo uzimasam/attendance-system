@@ -6,9 +6,11 @@ interface CohortFormProps {
     readonly cohortId: string;
     readonly cohorts: any[];
     readonly unit: string | null;
+    readonly programId: string;
 }
 
-export default function CohortForm({ onSubmit, cohortId, cohorts, unit }: CohortFormProps) {
+export default function CohortForm({ onSubmit, cohortId, cohorts, unit, programId }: CohortFormProps) {
+    cohorts = cohorts.filter(cohort => cohort.program_id === Number(programId));
     const [formData, setFormData] = useState({
         name: '',
         year: new Date().getFullYear(),
@@ -33,7 +35,7 @@ export default function CohortForm({ onSubmit, cohortId, cohorts, unit }: Cohort
                 <div className="p-2 bg-blue-50 rounded-lg">
                     <Users className="w-6 h-6 text-blue-600" />
                 </div>
-                <h2 className="text-xl font-semibold text-gray-900">Create Cohort</h2>
+                <h2 className="text-xl font-semibold text-gray-900">Select Cohort</h2>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">

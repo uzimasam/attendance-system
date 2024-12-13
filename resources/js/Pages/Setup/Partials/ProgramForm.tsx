@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { BookOpen, Plus } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, Plus } from 'lucide-react';
 import AddProgram from './AddProgram';
 
 interface ProgramFormProps {
-    readonly onSubmit: (data: any) => void;
+    readonly onSubmit: (programData: { id: string }) => void;
     readonly programs: any[];
     readonly schools: any[];
     readonly schoolId: string;
@@ -13,19 +13,18 @@ export default function ProgramForm({ onSubmit, programs, schools, schoolId }: R
     programs = programs.filter(program => program.school_id === Number(schoolId));
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formData, setFormData] = useState({
-        name: '',
-        code: '',
-        duration: 4,
-        semesters: 2,
+        id: ''
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit({ ...formData, id: Math.random().toString() });
+        if (formData.id) {
+            onSubmit({ id: formData.id });
+        }
     };
 
     const handleAddProgram = (programData: any) => {
-        setFormData(programData);
+        setFormData({ id: programData.id });
         setIsFormOpen(false);
     }
 
@@ -65,14 +64,35 @@ export default function ProgramForm({ onSubmit, programs, schools, schoolId }: R
                     <select
                         required
                         className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                        value={formData.name}
-                        onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                        value={formData.id}
+                        onChange={e => setFormData({ id: e.target.value })}
                     >
                         <option value="">Select Program</option>
                         {programs.map(program => (
-                            <option key={program.id} value={program.name}>{program.name}</option>
+                            <option key={program.id} value={program.id}>
+                                {program.name} - {program.code}
+                            </option>
                         ))}
                     </select>
+                </div>
+
+                {/* Navigation Buttons */}
+                <div className="flex justify-between mt-6">
+                    <button
+                        className={`flex items-center gap-2 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors`}
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        Back
+                    </button>
+                    
+                    <button
+                        type="submit"
+                        disabled={!formData.id}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Next
+                        <ArrowRight className="w-4 h-4" />
+                    </button>
                 </div>
             </form>
         </>

@@ -4,20 +4,21 @@ import SchoolForm from './SchoolForm';
 import ProgramForm from './ProgramForm';
 import CohortForm from './CohortForm';
 import StudentUpload from './StudentUpload';
+import UnitForm from './UnitForm';
 
 type Step = 'school' | 'program' | 'unit' | 'cohort' | 'students';
 
-export default function SetupPage({ schools, programs, cohorts }: any) {
+export default function SetupPage({ schools, units, programs, cohorts }: any) {
     const [currentStep, setCurrentStep] = useState<Step>('school');
     const [formData, setFormData] = useState<{
         school: { id: string } | null;
         program: { id: string } | null;
-        units: any[];
+        unit: { id: string } | null;
         cohort: { id: string } | null;
     }>({
         school: null,
         program: null,
-        units: [],
+        unit: null,
         cohort: null,
     });
 
@@ -47,6 +48,11 @@ export default function SetupPage({ schools, programs, cohorts }: any) {
         setFormData(prev => ({ ...prev, school: schoolData }));
         handleNext();
     };
+
+    const handleUnitSubmit = (unitData: any) => {
+        setFormData(prev => ({ ...prev, unit: unitData }));
+        handleNext();
+    }
 
     const handleProgramSubmit = (programData: any) => {
         setFormData(prev => ({ ...prev, program: programData }));
@@ -111,8 +117,9 @@ export default function SetupPage({ schools, programs, cohorts }: any) {
                 {/* Form Content */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     {currentStep === 'school' && <SchoolForm onSubmit={handleSchoolSubmit} schools={schools} />}
+                    {currentStep === 'unit' && <UnitForm onSubmit={handleUnitSubmit} units={units} schools={schools} />}
                     {currentStep === 'program' && <ProgramForm onSubmit={handleProgramSubmit} programs={programs} schools={schools} />}
-                    {currentStep === 'cohort' && <CohortForm onSubmit={handleCohortSubmit} cohortId={formData.cohort?.id ?? ''} cohorts={cohorts} units={formData.units} />}
+                    {currentStep === 'cohort' && <CohortForm onSubmit={handleCohortSubmit} cohortId={formData.cohort?.id ?? ''} cohorts={cohorts} unit={formData.unit?.id ?? null} />}
                     {currentStep === 'students' && (
                         <StudentUpload
                             onSubmit={handleStudentsSubmit}

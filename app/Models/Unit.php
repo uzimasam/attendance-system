@@ -17,7 +17,7 @@ class Unit extends Model
         'name',
         'code',
         'slug',
-        'program_id',
+        'school_id',
         'status'
     ];
 
@@ -33,9 +33,15 @@ class Unit extends Model
         'deleted_at' => 'datetime'
     ];
 
-    public function program()
+    public static $rules = [
+        'name' => 'required|string',
+        'code' => 'required|string|unique:units',
+        'school_id' => 'required|integer|exists:schools,id'
+    ];
+
+    public function school()
     {
-        return $this->belongsTo(Program::class, 'program_id', 'id');
+        return $this->belongsTo(School::class, 'school_id', 'id');
     }
 
     public function unitLecturers()

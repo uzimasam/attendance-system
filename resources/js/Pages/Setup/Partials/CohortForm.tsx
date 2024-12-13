@@ -5,19 +5,14 @@ interface CohortFormProps {
     readonly onSubmit: (data: any) => void;
     readonly cohortId: string;
     readonly cohorts: any[];
-    readonly units: ReadonlyArray<{
-        id: string;
-        name: string;
-        code: string;
-    }>;
+    readonly unit: string | null;
 }
 
-export default function CohortForm({ onSubmit, cohortId, cohorts, units }: CohortFormProps) {
+export default function CohortForm({ onSubmit, cohortId, cohorts, unit }: CohortFormProps) {
     const [formData, setFormData] = useState({
         name: '',
         year: new Date().getFullYear(),
         semester: 1,
-        unitIds: [] as string[],
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -28,9 +23,7 @@ export default function CohortForm({ onSubmit, cohortId, cohorts, units }: Cohor
     const handleUnitToggle = (unitId: string) => {
         setFormData(prev => ({
             ...prev,
-            unitIds: prev.unitIds.includes(unitId)
-                ? prev.unitIds.filter(id => id !== unitId)
-                : [...prev.unitIds, unitId],
+            unitId,
         }));
     };
 
@@ -62,29 +55,6 @@ export default function CohortForm({ onSubmit, cohortId, cohorts, units }: Cohor
                     </select>
                 </div>
             </form>
-
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="units">
-                    Assign Units
-                </label>
-                <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-lg divide-y">
-                    {units.map(unit => (
-                        <div key={unit.id} className="flex items-center p-3 hover:bg-gray-50 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                id={unit.id}
-                                checked={formData.unitIds.includes(unit.id)}
-                                onChange={() => handleUnitToggle(unit.id)}
-                                className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                            />
-                            <label htmlFor={unit.id} className="ml-3">
-                                <p className="font-medium text-gray-900">{unit.name}</p>
-                                <p className="text-sm text-gray-600">{unit.code}</p>
-                            </label>
-                        </div>
-                    ))}
-                </div>
-            </div>
         </form>
     );
 }

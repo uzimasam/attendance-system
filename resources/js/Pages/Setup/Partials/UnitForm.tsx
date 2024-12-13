@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import { Plus, School } from 'lucide-react';
-import AddSchool from './AddSchool';
+import { BookOpen, Plus } from 'lucide-react';
+import AddUnit from './AddUNit';
 
-interface SchoolFormProps {
-    onSubmit: (schoolData: any) => void;
-    schools: any[];
-};
+interface UnitFormProps {
+    readonly onSubmit: (data: any) => void;
+    readonly units: any[];
+    readonly schools: any[];
+}
 
-export default function SchoolForm({ onSubmit, schools }: Readonly<SchoolFormProps>) {
+export default function UnitForm({ onSubmit, units, schools }: Readonly<UnitFormProps>) {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         code: '',
-        description: '',
+        duration: 4,
+        semesters: 2,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -20,8 +22,8 @@ export default function SchoolForm({ onSubmit, schools }: Readonly<SchoolFormPro
         onSubmit({ ...formData, id: Math.random().toString() });
     };
 
-    const handleAddSchool = (schoolData: any) => {
-        setFormData(schoolData);
+    const handleAddUnit = (unitData: any) => {
+        setFormData(unitData);
         setIsFormOpen(false);
     }
 
@@ -30,31 +32,32 @@ export default function SchoolForm({ onSubmit, schools }: Readonly<SchoolFormPro
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-3 mb-6">
                     <div className="p-2 bg-blue-50 rounded-lg">
-                        <School className="w-6 h-6 text-blue-600" />
+                        <BookOpen className="w-6 h-6 text-blue-600" />
                     </div>
-                    <h2 className="text-xl font-semibold text-gray-900">School Details</h2>
+                    <h2 className="text-xl font-semibold text-gray-900">Unit Details</h2>
                 </div>
                 <button
                     onClick={() => setIsFormOpen(true)}
                     className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                     <Plus className="w-4 h-4" />
-                    Add School
+                    Add Unit
                 </button>
             </div>
 
             {isFormOpen && (
-                <AddSchool
+                <AddUnit
                     onClose={() => setIsFormOpen(false)}
-                    onSubmit={handleAddSchool}
+                    onSubmit={handleAddUnit}
+                    schools={schools}
                 />
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-                    <p className="text-sm font-medium my-2 text-gray-600">To get started, please select the school you want to setup.<br /> If the school is not listed, click the "Add School" button above to add a new school.</p>
-                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="school">
-                        Select School
+                <div>
+                    <p className="text-sm font-medium my-2 text-gray-600">To get started, please select the unit you want to setup.<br /> If the unit is not listed, click the "Add Unit" button above to add a new unit.</p>
+                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="unit">
+                        Select Unit
                     </label>
                     <select
                         required
@@ -62,9 +65,9 @@ export default function SchoolForm({ onSubmit, schools }: Readonly<SchoolFormPro
                         value={formData.name}
                         onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
                     >
-                        <option value="">Select School</option>
-                        {schools.map(school => (
-                            <option key={school.id} value={school.name}>{school.name}</option>
+                        <option value="">Select Unit</option>
+                        {units.map(unit => (
+                            <option key={unit.id} value={unit.name}>{unit.name}</option>
                         ))}
                     </select>
                 </div>

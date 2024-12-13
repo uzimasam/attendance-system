@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cohort;
 use App\Models\Program;
 use App\Models\School;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Log;
@@ -26,6 +27,7 @@ class ProgramController extends Controller
     {
         return Inertia::render('Setup/Index', [
             'schools' => School::all(),
+            'units' => Unit::all(),
             'programs' => Program::all(),
             'cohorts' => Cohort::all()
         ]);

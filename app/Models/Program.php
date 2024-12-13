@@ -50,7 +50,7 @@ class Program extends Model
 
     public function units()
     {
-        return $this->hasMany(Unit::class, 'program_id', 'id');
+        return $this->hasManyThrough(Unit::class,CohortUnit::class,'cohort_id','id','id','unit_id')->join('cohorts', 'cohort_units.cohort_id', '=', 'cohorts.id')->where('cohorts.program_id', $this->id);
     }
 
     public function cohorts()

@@ -37,6 +37,11 @@ class School extends Model
         'code' => 'required|string|unique:schools'
     ];
 
+    public function units()
+    {
+        return $this->hasMany(Unit::class, 'school_id', 'id');
+    }
+
     public function userSchools()
     {
         return $this->hasMany(UserSchool::class, 'school_id', 'id');

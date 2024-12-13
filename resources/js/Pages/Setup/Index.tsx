@@ -16,6 +16,14 @@ interface AuthProps {
         readonly slug: string;
         readonly status: string;
     }[];
+    readonly units: {
+        readonly id: number;
+        readonly name: string;
+        readonly code: string;
+        readonly slug: string;
+        readonly schoolId: number;
+        readonly status: string;
+    }[];
     readonly programs: {
         readonly id: number;
         readonly name: string;
@@ -37,6 +45,7 @@ function App({
     schools,
     programs,
     cohorts,
+    units,
     auth
 }: AuthProps) {
 
@@ -44,7 +53,7 @@ function App({
         <>
             <Head title="Schedule" />
             <AuthenticatedLayout fullName={auth.user.name}>
-                <SetupPage schools={schools} programs={programs} cohorts={cohorts} />
+                <SetupPage schools={schools} programs={programs} cohorts={cohorts} units={units} />
             </AuthenticatedLayout>
         </>
     );

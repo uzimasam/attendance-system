@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance');
     Route::get('/unit', [UnitController::class, 'index'])->name('unit');
+    Route::post('/unit/store', [UnitController::class, 'store'])->name('unit.store');
     Route::get('/program', [ProgramController::class, 'index'])->name('program');
     Route::post('/program/store', [ProgramController::class, 'store'])->name('program.store');
     Route::get('/setup', [ProgramController::class, 'setup'])->name('setup');

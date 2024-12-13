@@ -119,7 +119,7 @@ export default function SetupPage({ schools, units, programs, cohorts }: any) {
                 {/* Form Content */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     {currentStep === 'school' && <SchoolForm onSubmit={handleSchoolSubmit} schools={schools} />}
-                    {currentStep === 'unit' && <UnitForm onSubmit={handleUnitSubmit} units={units} schools={schools} />}
+                    {currentStep === 'unit' && <UnitForm onSubmit={handleUnitSubmit} units={units} schools={schools} schoolId={formData.school?.id ?? ''} />}
                     {currentStep === 'program' && <ProgramForm onSubmit={handleProgramSubmit} programs={programs} schools={schools} schoolId={formData.school?.id ?? ''} />}
                     {currentStep === 'cohort' && <CohortForm onSubmit={handleCohortSubmit} cohortId={formData.cohort?.id ?? ''} cohorts={cohorts} unit={formData.unit?.id ?? null} programId={formData.program?.id ?? ''} />}
                     {currentStep === 'students' && (

@@ -1,25 +1,26 @@
 import React, { useState } from 'react';
-import { BookOpen, Plus } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, Plus } from 'lucide-react';
 import AddUnit from './AddUNit';
 
 interface UnitFormProps {
-    readonly onSubmit: (data: any) => void;
+    readonly onSubmit: (unitData: { id: string }) => void;
     readonly units: any[];
     readonly schools: any[];
+    readonly schoolId: string;
 }
 
-export default function UnitForm({ onSubmit, units, schools }: Readonly<UnitFormProps>) {
+export default function UnitForm({ onSubmit, units, schools, schoolId }: Readonly<UnitFormProps>) {
+    units = units.filter(unit => unit.school_id === Number(schoolId));
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formData, setFormData] = useState({
-        name: '',
-        code: '',
-        duration: 4,
-        semesters: 2,
+        id: ''
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit({ ...formData, id: Math.random().toString() });
+        if (formData.id) {
+            onSubmit({ id: formData.id });
+        }
     };
 
     const handleAddUnit = (unitData: any) => {
@@ -50,6 +51,7 @@ export default function UnitForm({ onSubmit, units, schools }: Readonly<UnitForm
                     onClose={() => setIsFormOpen(false)}
                     onSubmit={handleAddUnit}
                     schools={schools}
+                    schoolId={schoolId}
                 />
             )}
 
@@ -62,14 +64,33 @@ export default function UnitForm({ onSubmit, units, schools }: Readonly<UnitForm
                     <select
                         required
                         className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                        value={formData.name}
-                        onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                        value={formData.id}
+                        onChange={e => setFormData({ id: e.target.value })}
                     >
                         <option value="">Select Unit</option>
                         {units.map(unit => (
-                            <option key={unit.id} value={unit.name}>{unit.name} - {unit.code}</option>
+                            <option key={unit.id} value={unit.id}>{unit.name} - {unit.code}</option>
                         ))}
                     </select>
+                </div>
+
+                {/* Navigation Buttons */}
+                <div className="flex justify-between mt-6">
+                    <button
+                        className={`flex items-center gap-2 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors`}
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        Back
+                    </button>
+
+                    <button
+                        type="submit"
+                        disabled={!formData.id}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Next
+                        <ArrowRight className="w-4 h-4" />
+                    </button>
                 </div>
             </form>
         </>

@@ -10,13 +10,14 @@ interface AddUnitProps {
     readonly onClose: () => void;
     readonly onSubmit: (schedule: Omit<Unit, 'id'>) => void;
     readonly schools: any[];
+    readonly schoolId: string;
 }
 
-export default function AddUnit({ onClose, onSubmit, schools }: AddUnitProps) {
+export default function AddUnit({ onClose, onSubmit, schools, schoolId }: AddUnitProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         code: '',
-        school_id: schools[0].id,
+        school_id: schoolId,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -80,7 +81,7 @@ export default function AddUnit({ onClose, onSubmit, schools }: AddUnitProps) {
                             required
                             className='w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
                             value={data.school_id}
-                            onChange={e => setData(prev => ({ ...prev, school_id: Number(e.target.value) }))}
+                            onChange={e => setData(prev => ({ ...prev, school_id: e.target.value }))}
                         >
                             {schools.map(school => (
                                 <option key={school.id} value={school.id}>

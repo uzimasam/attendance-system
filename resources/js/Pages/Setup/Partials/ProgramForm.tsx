@@ -84,7 +84,7 @@ export default function ProgramForm({ onSubmit, programs, schools, schoolId }: R
                         <ArrowLeft className="w-4 h-4" />
                         Back
                     </button>
-                    
+
                     <button
                         type="submit"
                         disabled={!formData.id}

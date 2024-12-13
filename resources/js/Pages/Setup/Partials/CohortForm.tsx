@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Users } from 'lucide-react';
 
 interface CohortFormProps {
     readonly onSubmit: (data: any) => void;
@@ -12,21 +12,14 @@ interface CohortFormProps {
 export default function CohortForm({ onSubmit, cohortId, cohorts, unit, programId }: CohortFormProps) {
     cohorts = cohorts.filter(cohort => cohort.program_id === Number(programId));
     const [formData, setFormData] = useState({
-        name: '',
-        year: new Date().getFullYear(),
-        semester: 1,
+        id: ''
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit({ ...formData, id: Math.random().toString(), cohortId });
-    };
-
-    const handleUnitToggle = (unitId: string) => {
-        setFormData(prev => ({
-            ...prev,
-            unitId,
-        }));
+        if (formData.id) {
+            onSubmit({ id: formData.id });
+        }
     };
 
     return (
@@ -47,14 +40,33 @@ export default function CohortForm({ onSubmit, cohortId, cohorts, unit, programI
                     <select
                         required
                         className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                        value={formData.name}
-                        onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                        value={formData.id}
+                        onChange={e => setFormData({ id: e.target.value })}
                     >
                         <option value="">Select Cohort</option>
                         {cohorts.map(cohort => (
-                            <option key={cohort.id} value={cohort.name}>{cohort.name}</option>
+                            <option key={cohort.id} value={cohort.id}>{cohort.name}</option>
                         ))}
                     </select>
+                </div>
+
+                {/* Navigation Buttons */}
+                <div className="flex justify-between mt-6">
+                    <button
+                        className={`flex items-center gap-2 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors`}
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        Back
+                    </button>
+
+                    <button
+                        type="submit"
+                        disabled={!formData.id}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Next
+                        <ArrowRight className="w-4 h-4" />
+                    </button>
                 </div>
             </form>
         </>

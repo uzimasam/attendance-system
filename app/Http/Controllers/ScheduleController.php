@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cohort;
 use App\Models\Schedule;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,9 +16,13 @@ class ScheduleController extends Controller
     public function index()
     {
         // render view with Inertia to display all schedules
+        $cohorts = Cohort::all();
         $schedules = Schedule::with('cohort')->with('unit')->get();
+        $units = Unit::all();
         return Inertia::render('Schedule/Index', [
-            'schedules' => $schedules
+            'cohorts'=> $cohorts,
+            'schedules' => $schedules,
+            'units'=> $units
         ]);
     }
 

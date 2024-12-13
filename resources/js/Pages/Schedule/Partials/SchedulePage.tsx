@@ -5,7 +5,7 @@ import ScheduleCalendar from './ScheduleCalendar';
 import ScheduleList from './ScheduleList';
 import { Schedule } from '@/types';
 
-export default function SchedulePage() {
+export default function SchedulePage({ units, schedules, cohorts }: any) {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 

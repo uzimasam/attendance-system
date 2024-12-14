@@ -1,7 +1,5 @@
-import React from 'react';
-import { Calendar, Users, BookOpen, BarChart3 } from 'lucide-react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import ProgramPage from './Partials/ProgramPage';
 
 interface AuthProps {

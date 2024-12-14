@@ -1,6 +1,5 @@
-import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import UnitPage from './Partials/UnitPage';
 
 interface AuthProps {

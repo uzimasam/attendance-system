@@ -40,7 +40,6 @@ function App({
     cohorts,
     auth
 }: ScheduleProps) {
-    console.log(units);
     return (
         <>
             <Head title="Schedule" />

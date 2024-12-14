@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');
     Route::post('/schedule/store', [ScheduleController::class, 'store'])->name('schedule.store');
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance');
+    Route::get('attendance/{attendance_link}', [AttendanceController::class, 'portal'])->name('attendance.portal');
     Route::get('/unit', [UnitController::class, 'index'])->name('unit');
     Route::post('/unit/store', [UnitController::class, 'store'])->name('unit.store');
     Route::get('/program', [ProgramController::class, 'index'])->name('program');

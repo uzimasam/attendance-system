@@ -57,7 +57,7 @@ export default function ScheduleList({ schedules, selectedDate }: ScheduleListPr
 
                             <div className="flex flex-col items-center">
                                 <Link
-                                    href={route('attendance')}
+                                    href={route('attendance.portal', schedule.attendance_link)}
                                     className="mt-4 w-full px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
                                 >
                                     Start Attendance

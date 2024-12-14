@@ -15,6 +15,7 @@ class Schedule extends Model
 
     protected $fillable = [
         'attendance_link',
+        'user_id',
         'unit_id',
         'cohort_id',
         'day',
@@ -45,6 +46,11 @@ class Schedule extends Model
         'venue' => 'required|string'
     ];
 
+    public function lecturer()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
     public function unit()
     {
         return $this->belongsTo(Unit::class, 'unit_id', 'id');
@@ -53,5 +59,10 @@ class Schedule extends Model
     public function cohort()
     {
         return $this->belongsTo(Cohort::class, 'cohort_id', 'id');
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class, 'schedule_id', 'id');
     }
 }

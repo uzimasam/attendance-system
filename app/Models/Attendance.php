@@ -14,9 +14,8 @@ class Attendance extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'cohort_student_id',
-        'unit_id',
-        'attendance_date',
+        'schedule_id',
+        'student_id',
         'attendance_status'
     ];
 
@@ -32,23 +31,13 @@ class Attendance extends Model
         'deleted_at' => 'datetime'
     ];
 
-    public function cohortStudent()
+    public function schedule()
     {
-        return $this->belongsTo(CohortStudent::class, 'cohort_student_id', 'id');
-    }
-
-    public function unit()
-    {
-        return $this->belongsTo(Unit::class, 'unit_id', 'id');
-    }
-
-    public function cohort()
-    {
-        return $this->belongsToThrough(Cohort::class, CohortStudent::class, 'id', 'cohort_id', 'cohort_student_id', 'id');
+        return $this->belongsTo(Schedule::class, 'schedule_id', 'id');
     }
 
     public function student()
     {
-        return $this->belongsToThrough(User::class, CohortStudent::class, 'id', 'student_id', 'cohort_student_id', 'id');
+        return $this->belongsTo(Student::class,'student_id', 'id');
     }
 }

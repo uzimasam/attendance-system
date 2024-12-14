@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('cohort_student_id')->constrained('cohort_students');
             $table->foreignId('unit_id')->constrained('units');
             $table->datetime('attendance_date')->default(now());
-            $table->enum('attendance_status', ['present', 'absent', 'excused'])->default('absent');
+            $table->enum('attendance_status', ['present', 'absent', 'excused', 'pending'])->default('pending');
             $table->softDeletes();
             $table->timestamps();
         });

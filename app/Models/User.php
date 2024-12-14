@@ -66,4 +66,9 @@ class User extends Authenticatable
     {
         return $this->hasManyThrough(Unit::class, UnitLecturer::class, 'lecturer_id', 'id', 'id', 'unit_id');
     }
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class, 'user_id', 'id');
+    }
 }

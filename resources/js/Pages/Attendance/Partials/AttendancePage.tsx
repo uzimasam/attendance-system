@@ -1,24 +1,24 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, QrCode, UserCheck, UserX, Search, AlertCircle, XCircle, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, UserCheck, Search } from 'lucide-react';
 import { Student, Attendance, Schedule } from '@/types';
 import StudentList from './StudentList';
 import AttendanceStats from './AttendanceStats';
 import ScannerInput from './ScannerInput';
 import FinalizeAttendance from './FinalizeAttendance';
+import axios from 'axios';
 
 interface AttendancePageProps {
     readonly schedule: Schedule;
-    readonly students: Student[];
 }
 
 export default function AttendancePage({ schedule }: AttendancePageProps) {
-    const [view, setView] = useState<'qr' | 'list'>('qr');
+    const [view, setView] = useState<'qr' | 'list'>('list');
     const [searchQuery, setSearchQuery] = useState('');
     const [showFinalize, setShowFinalize] = useState(false);
     const [attendances, setAttendances] = useState<Attendance[]>(schedule.attendances);
     const [markedAttendance, setMarkedAttendance] = useState<Attendance[]>([]);
-
     const [students, setStudents] = useState<Student[]>([]);
+
     useEffect(() => {
         if (attendances.length > 0) {
             setStudents(attendances.map((attendance: Attendance) => attendance.student));
@@ -26,7 +26,7 @@ export default function AttendancePage({ schedule }: AttendancePageProps) {
     }, [attendances]);
 
     const handleMarkAttendance = (studentId: number, status: 'present' | 'absent' | 'excused') => {
-        setAttendances(prev => {
+        setMarkedAttendance(prev => {
             const existing = prev.find(a => a.student_id === studentId);
             if (existing) {
                 return prev.map(a =>
@@ -52,7 +52,7 @@ export default function AttendancePage({ schedule }: AttendancePageProps) {
         }
     };
 
-    const handleFinalize = (excusedStudents: string[]) => {
+    const handleFinalize = async (excusedStudents: string[]) => {
         // Mark excused students
         excusedStudents.forEach(studentId => {
             handleMarkAttendance(Number(studentId), 'excused');
@@ -60,13 +60,30 @@ export default function AttendancePage({ schedule }: AttendancePageProps) {
 
         // Mark remaining unmarked students as absent
         students.forEach(student => {
-            const hasAttendance = attendances.some(a => a.student_id === student.id);
+            const hasAttendance = markedAttendance.some(a => a.student_id === student.id);
             if (!hasAttendance) {
                 handleMarkAttendance(student.id, 'absent');
             }
         });
 
         setShowFinalize(false);
+    };
+
+    const submitAttendance = async () => {
+        // ensure all students have been marked
+        if (students.length !== markedAttendance.length) {
+            // refetch marked attendance
+            alert('Please mark attendance for all students');
+        }
+        // submit attendance to the server via route('attendances.store')
+        try {
+            console.log('Submitting attendance:', markedAttendance); // Debugging line
+            await axios.post(route('attendances.store'), { attendances: markedAttendance });
+            alert('Attendance marked successfully');
+        } catch (error) {
+            console.error('Error submitting attendance:', error);
+            alert('Failed to mark attendance');
+        }
     };
 
     // format date custom function. It will accept schedule.day, schedule.start_time, schedule.end_time end return time in format "Thursday, 12th August 2021, 8:00 AM - 10:00 AM"
@@ -105,9 +122,9 @@ export default function AttendancePage({ schedule }: AttendancePageProps) {
 
             <AttendanceStats
                 total={attendances.length}
-                present={attendances.filter(a => a.attendance_status === 'present').length}
-                absent={attendances.filter(a => a.attendance_status === 'absent').length}
-                excused={attendances.filter(a => a.attendance_status === 'excused').length}
+                present={markedAttendance.filter(a => a.attendance_status === 'present').length}
+                absent={markedAttendance.filter(a => a.attendance_status === 'absent').length}
+                excused={markedAttendance.filter(a => a.attendance_status === 'excused').length}
             />
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100">
@@ -142,7 +159,7 @@ export default function AttendancePage({ schedule }: AttendancePageProps) {
                         </div>
                         <StudentList
                             students={students}
-                            attendance={attendances}
+                            attendance={markedAttendance}
                             searchQuery={searchQuery}
                             onMarkAttendance={handleMarkAttendance}
                         />
@@ -155,6 +172,7 @@ export default function AttendancePage({ schedule }: AttendancePageProps) {
                 <FinalizeAttendance
                     students={students}
                     attendance={attendances}
+                    markedAttendance={markedAttendance}
                     onClose={() => setShowFinalize(false)}
                     onFinalize={handleFinalize}
                 />

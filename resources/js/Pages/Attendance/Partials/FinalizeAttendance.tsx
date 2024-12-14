@@ -5,6 +5,7 @@ import { Student, Attendance } from '@/types';
 interface FinalizeAttendanceProps {
     students: Student[];
     attendance: Attendance[];
+    markedAttendance: Attendance[];
     onClose: () => void;
     onFinalize: (excusedStudents: string[]) => void;
 }
@@ -12,13 +13,14 @@ interface FinalizeAttendanceProps {
 export default function FinalizeAttendance({
     students,
     attendance,
+    markedAttendance,
     onClose,
     onFinalize,
 }: FinalizeAttendanceProps) {
     const [excusedStudents, setExcusedStudents] = useState<string[]>([]);
 
     const unmarkedStudents = students.filter(
-        student => !attendance.some(a => a.student_id === student.id)
+        student => !markedAttendance.some(a => a.student_id === student.id)
     );
 
     const handleExcuseToggle = (studentId: string) => {

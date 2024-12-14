@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Log;
 
 class AttendanceController extends Controller
 {
@@ -40,7 +41,7 @@ class AttendanceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Log::info($request->all());
     }
 
     /**

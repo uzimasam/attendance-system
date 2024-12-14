@@ -21,7 +21,7 @@ class AttendanceController extends Controller
 
     public function portal($attendance_link)
     {
-        $schedule = Schedule::where('attendance_link', $attendance_link)->with('unit')->with('cohort')->first();
+        $schedule = Schedule::where('attendance_link', $attendance_link)->where('user_id', auth()->user()->id)->with('lecturer')->with('attendances')->with('attendances.student')->with('unit')->with('cohort')->first();
         return Inertia::render('Attendance/Index', [
             'schedule' => $schedule,
         ]);

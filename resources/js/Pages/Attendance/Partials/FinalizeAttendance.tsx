@@ -18,7 +18,7 @@ export default function FinalizeAttendance({
     const [excusedStudents, setExcusedStudents] = useState<string[]>([]);
 
     const unmarkedStudents = students.filter(
-        student => !attendance.some(a => a.cohort_student_id === student.id)
+        student => !attendance.some(a => a.student_id === student.id)
     );
 
     const handleExcuseToggle = (studentId: string) => {
@@ -57,7 +57,7 @@ export default function FinalizeAttendance({
                                 className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0"
                             >
                                 <div>
-                                    <h3 className="font-medium text-gray-900">{student.first_name} {student.last_name}</h3>
+                                    <h3 className="font-medium text-gray-900">{student.name}</h3>
                                     <p className="text-sm text-gray-600">{student.registration_number}</p>
                                 </div>
                                 <label className="flex items-center gap-2">

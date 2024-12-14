@@ -8,46 +8,45 @@ import FinalizeAttendance from './FinalizeAttendance';
 
 interface AttendancePageProps {
     readonly schedule: Schedule;
+    readonly students: Student[];
 }
 
 export default function AttendancePage({ schedule }: AttendancePageProps) {
     const [view, setView] = useState<'qr' | 'list'>('qr');
     const [searchQuery, setSearchQuery] = useState('');
     const [showFinalize, setShowFinalize] = useState(false);
-    const [attendance, setAttendance] = useState<Attendance[]>([
-        { id: 1, cohort_student_id: 1, unit_id: 1, attendance_status: 'present', attendance_date: new Date().toISOString() },
-        { id: 2, cohort_student_id: 2, unit_id: 1, attendance_status: 'absent', attendance_date: new Date().toISOString() },
-    ]);
+    const [attendances, setAttendances] = useState<Attendance[]>(schedule.attendances);
+    const [markedAttendance, setMarkedAttendance] = useState<Attendance[]>([]);
 
-    // Mock data - in a real app, this would come from an API
-    const mockStudents: Student[] = [
-        { id: 1, registration_number: 'CS/MG/1578/09/21', first_name: 'Samuel', last_name: 'Uzima', email: 'samueluzima@kabarak.ac.kez', phone: '0712345678', status: 'active' },
-        { id: 2, registration_number: 'BSCSF/MG/2137/09/21', first_name: 'Felix', last_name: 'Masigwa', email: 'bob@jik.com', phone: '0712345678', status: 'active' },
-        { id: 3, registration_number: 'CS/003/2024', first_name: 'Charlie', last_name: 'Brown', email: 'browm@jik.com', phone: '0712345678', status: 'active' },
-    ];
+    const [students, setStudents] = useState<Student[]>([]);
+    useEffect(() => {
+        if (attendances.length > 0) {
+            setStudents(attendances.map((attendance: Attendance) => attendance.student));
+        }
+    }, [attendances]);
 
     const handleMarkAttendance = (studentId: number, status: 'present' | 'absent' | 'excused') => {
-        setAttendance(prev => {
-            const existing = prev.find(a => a.cohort_student_id === studentId);
+        setAttendances(prev => {
+            const existing = prev.find(a => a.student_id === studentId);
             if (existing) {
                 return prev.map(a =>
-                    a.cohort_student_id === studentId
-                        ? { ...a, attendance_status: status, attendance_date: new Date().toISOString() }
+                    a.student_id === studentId
+                        ? { ...a, attendance_status: status }
                         : a
                 );
             }
             return [...prev, {
-                id: Math.random(),
-                cohort_student_id: studentId,
-                unit_id: 1,
+                id: prev.length + 1, // or any unique id generation logic
+                schedule_id: schedule.id,
+                student_id: studentId,
                 attendance_status: status,
-                attendance_date: new Date().toISOString()
+                student: students.find(s => s.id === studentId) as Student
             }];
         });
     };
 
     const handleScanComplete = (regNo: string) => {
-        const student = mockStudents.find(s => s.registration_number === regNo);
+        const student = students.find(s => s.registration_number === regNo);
         if (student) {
             handleMarkAttendance(student.id, 'present');
         }
@@ -60,8 +59,8 @@ export default function AttendancePage({ schedule }: AttendancePageProps) {
         });
 
         // Mark remaining unmarked students as absent
-        mockStudents.forEach(student => {
-            const hasAttendance = attendance.some(a => a.cohort_student_id === student.id);
+        students.forEach(student => {
+            const hasAttendance = attendances.some(a => a.student_id === student.id);
             if (!hasAttendance) {
                 handleMarkAttendance(student.id, 'absent');
             }
@@ -92,8 +91,8 @@ export default function AttendancePage({ schedule }: AttendancePageProps) {
                         <ArrowLeft className="w-5 h-5" />
                     </button>
                     <div>
-                        <h1 className="text-2xl font-semibold text-gray-900">{ schedule.unit.name }</h1>
-                        <p className="text-sm text-gray-600">{ formatDate(schedule.day, schedule.start_time, schedule.end_time) } • { schedule.venue }</p>
+                        <h1 className="text-2xl font-semibold text-gray-900">{schedule.unit.name}</h1>
+                        <p className="text-sm text-gray-600">{formatDate(schedule.day, schedule.start_time, schedule.end_time)} • {schedule.venue}</p>
                     </div>
                 </div>
                 <button
@@ -105,10 +104,10 @@ export default function AttendancePage({ schedule }: AttendancePageProps) {
             </div>
 
             <AttendanceStats
-                total={mockStudents.length}
-                present={attendance.filter(a => a.attendance_status === 'present').length}
-                absent={attendance.filter(a => a.attendance_status === 'absent').length}
-                excused={attendance.filter(a => a.attendance_status === 'excused').length}
+                total={attendances.length}
+                present={attendances.filter(a => a.attendance_status === 'present').length}
+                absent={attendances.filter(a => a.attendance_status === 'absent').length}
+                excused={attendances.filter(a => a.attendance_status === 'excused').length}
             />
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100">
@@ -117,8 +116,8 @@ export default function AttendancePage({ schedule }: AttendancePageProps) {
                         <button
                             onClick={() => setView('list')}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${view === 'list'
-                                    ? 'bg-blue-600 text-white'
-                                    : 'text-gray-600 hover:bg-gray-100'
+                                ? 'bg-blue-600 text-white'
+                                : 'text-gray-600 hover:bg-gray-100'
                                 }`}
                         >
                             <UserCheck className="w-5 h-5" />
@@ -142,19 +141,20 @@ export default function AttendancePage({ schedule }: AttendancePageProps) {
                             />
                         </div>
                         <StudentList
-                            students={mockStudents}
-                            attendance={attendance}
+                            students={students}
+                            attendance={attendances}
                             searchQuery={searchQuery}
                             onMarkAttendance={handleMarkAttendance}
                         />
                     </div>
                 )}
+
             </div>
 
             {showFinalize && (
                 <FinalizeAttendance
-                    students={mockStudents}
-                    attendance={attendance}
+                    students={students}
+                    attendance={attendances}
                     onClose={() => setShowFinalize(false)}
                     onFinalize={handleFinalize}
                 />

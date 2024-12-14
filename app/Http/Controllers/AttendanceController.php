@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,6 +16,14 @@ class AttendanceController extends Controller
     {
         return Inertia::render('Attendance/Index', [
             'attendances' => Attendance::all(),
+        ]);
+    }
+
+    public function portal($attendance_link)
+    {
+        $schedule = Schedule::where('attendance_link', $attendance_link)->with('unit')->with('cohort')->first();
+        return Inertia::render('Attendance/Index', [
+            'schedule' => $schedule,
         ]);
     }
 

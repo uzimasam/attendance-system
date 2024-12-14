@@ -1,12 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, QrCode, UserCheck, UserX, Search, AlertCircle, XCircle, CheckCircle2 } from 'lucide-react';
-import { Student, Attendance } from '@/types';
+import { Student, Attendance, Schedule } from '@/types';
 import StudentList from './StudentList';
 import AttendanceStats from './AttendanceStats';
 import ScannerInput from './ScannerInput';
 import FinalizeAttendance from './FinalizeAttendance';
 
-export default function AttendancePage() {
+interface AttendancePageProps {
+    readonly schedule: Schedule;
+}
+
+export default function AttendancePage({ schedule }: AttendancePageProps) {
     const [view, setView] = useState<'qr' | 'list'>('qr');
     const [searchQuery, setSearchQuery] = useState('');
     const [showFinalize, setShowFinalize] = useState(false);
@@ -66,6 +70,17 @@ export default function AttendancePage() {
         setShowFinalize(false);
     };
 
+    // format date custom function. It will accept schedule.day, schedule.start_time, schedule.end_time end return time in format "Thursday, 12th August 2021, 8:00 AM - 10:00 AM"
+    const formatDate = (date: string, startTime: string, endTime: string) => {
+        const day = new Date(date).toLocaleDateString('en-US', { weekday: 'long' });
+        const month = new Date(date).toLocaleDateString('en-US', { month: 'long' });
+        const dayNum = new Date(date).toLocaleDateString('en-US', { day: 'numeric' });
+        const year = new Date(date).toLocaleDateString('en-US', { year: 'numeric' });
+        const start = new Date(`${date} ${startTime}`).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+        const end = new Date(`${date} ${endTime}`).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+        return `${day}, ${dayNum} ${month} ${year}, ${start} - ${end}`;
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -77,8 +92,8 @@ export default function AttendancePage() {
                         <ArrowLeft className="w-5 h-5" />
                     </button>
                     <div>
-                        <h1 className="text-2xl font-semibold text-gray-900">Programming 101</h1>
-                        <p className="text-sm text-gray-600">Thursday, March 21, 2024 • 10:00 AM - 12:00 PM • Lab 2B</p>
+                        <h1 className="text-2xl font-semibold text-gray-900">{ schedule.unit.name }</h1>
+                        <p className="text-sm text-gray-600">{ formatDate(schedule.day, schedule.start_time, schedule.end_time) } • { schedule.venue }</p>
                     </div>
                 </div>
                 <button

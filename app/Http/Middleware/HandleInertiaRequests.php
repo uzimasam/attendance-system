@@ -31,23 +31,6 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         // create a schools array to be shared with all pages
-        /*
-            {
-                id: '1',
-                name: 'School of Computing',
-                programs: [
-                    {
-                        id: '1',
-                        name: 'Computer Science',
-                        code: 'CS',
-                        units: [
-                            { id: '1', name: 'Programming 101', cohorts: ['Year 1 2024', 'Year 2 2023'] },
-                            { id: '2', name: 'Data Structures', cohorts: ['Year 2 2023'] }
-                        ]
-                    }
-                ]
-            }
-        */
         $schools = School::with('programs.units.cohorts')->get()->map(function ($school) {
             return [
                 'id' => $school->id,

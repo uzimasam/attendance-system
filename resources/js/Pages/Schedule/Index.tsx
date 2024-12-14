@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import SchedulePage from './Partials/SchedulePage';
+import { Schedule } from '@/types';
 
 interface ScheduleProps {
     readonly units: {
@@ -11,15 +12,7 @@ interface ScheduleProps {
         readonly schoolId: number;
         readonly status: string;
     }[];
-    readonly schedules: {
-        readonly id: number;
-        readonly unitId: number;
-        readonly cohortId: number;
-        readonly day: string;
-        readonly time: string;
-        readonly venue: string;
-        readonly status: string;
-    }[];
+    readonly schedules: Schedule[];
     readonly cohorts: {
         readonly id: number;
         readonly name: string;

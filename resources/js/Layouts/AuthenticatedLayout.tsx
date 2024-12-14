@@ -42,23 +42,6 @@ export default function AuthenticatedLayout({ fullName, children }: { fullName: 
     const [activeSchool, setActiveSchool] = useState<string | null>(null);
     const [activeProgram, setActiveProgram] = useState<string | null>(null);
 
-    /*
-            {
-                id: '1',
-                name: 'School of Computing',
-                programs: [
-                    {
-                        id: '1',
-                        name: 'Computer Science',
-                        code: 'CS',
-                        units: [
-                            { id: '1', name: 'Programming 101', cohorts: ['Year 1 2024', 'Year 2 2023'] },
-                            { id: '2', name: 'Data Structures', cohorts: ['Year 2 2023'] }
-                        ]
-                    }
-                ]
-            }
-        */
     // infer the type of schools from the props
     interface School {
         id: string;

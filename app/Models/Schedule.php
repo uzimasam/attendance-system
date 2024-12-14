@@ -36,6 +36,15 @@ class Schedule extends Model
         'deleted_at' => 'datetime'
     ];
 
+    public static $rules = [
+        'unit_id' => 'required|integer|exists:units,id',
+        'cohort_id' => 'required|integer|exists:cohorts,id',
+        'day' => 'required|string',
+        'start_time' => 'required|string',
+        'end_time' => 'required|string',
+        'venue' => 'required|string'
+    ];
+
     public function unit()
     {
         return $this->belongsTo(Unit::class, 'unit_id', 'id');

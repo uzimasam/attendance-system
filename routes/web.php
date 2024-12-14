@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');
+    Route::post('/schedule/store', [ScheduleController::class, 'store'])->name('schedule.store');
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance');
     Route::get('/unit', [UnitController::class, 'index'])->name('unit');
     Route::post('/unit/store', [UnitController::class, 'store'])->name('unit.store');

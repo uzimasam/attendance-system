@@ -7,6 +7,8 @@ use App\Models\Schedule;
 use App\Models\Unit;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Log;
+use Str;
 
 class ScheduleController extends Controller
 {
@@ -16,13 +18,13 @@ class ScheduleController extends Controller
     public function index()
     {
         // render view with Inertia to display all schedules
-        $cohorts = Cohort::orderBy('code','asc')->get();
+        $cohorts = Cohort::orderBy('code', 'asc')->get();
         $schedules = Schedule::with('cohort')->with('unit')->get();
-        $units = Unit::orderBy('code','asc')->get();
+        $units = Unit::orderBy('code', 'asc')->get();
         return Inertia::render('Schedule/Index', [
-            'cohorts'=> $cohorts,
+            'cohorts' => $cohorts,
             'schedules' => $schedules,
-            'units'=> $units
+            'units' => $units
         ]);
     }
 
@@ -39,7 +41,29 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Log::info($request->all());
+        // validate the request
+        $request->validate(Schedule::$rules);
+
+        // create an attendance link as a random 10 character string
+        $link = Str::random(10);
+        while (Schedule::where('attendance_link', $link)->first()) {
+            $link = Str::random(10);
+        }
+
+        // create the schedule
+        Schedule::create([
+            'attendance_link' => $link,
+            'unit_id' => $request->unit_id,
+            'cohort_id' => $request->cohort_id,
+            'day' => $request->day,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+            'venue' => $request->venue,
+            'status' => 'active'
+        ]);
+
+        return redirect()->route('schedule')->with('success','Class scheduled successfully');
     }
 
     /**

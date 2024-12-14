@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\CohortStudent;
 use App\Models\Student;
 use Illuminate\Http\Request;
-use Log;
 
 class StudentController extends Controller
 {
@@ -30,7 +29,6 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        Log::info("Request: " . json_encode($request->all()));
         $students = $request->data;
         foreach ($students as $student) {
             // check if student exists

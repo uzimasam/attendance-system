@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Unit;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Log;
 use Str;
 
 class UnitController extends Controller
@@ -33,7 +32,6 @@ class UnitController extends Controller
      */
     public function store(Request $request)
     {
-        Log::info($request->all());
         // validate the request
         $request->validate(Unit::$rules);
 

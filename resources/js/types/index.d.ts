@@ -45,6 +45,8 @@ export interface Schedule {
     end_time: string;
     venue: string;
     status: string;
+    unit: Unit;
+    cohort: Cohort;
 }
 
 export interface School {

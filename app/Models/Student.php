@@ -15,10 +15,8 @@ class Student extends Model
 
     protected $fillable = [
         'registration_number',
-        'first_name',
-        'last_name',
+        'name',
         'email',
-        'phone',
         'status'
     ];
 
@@ -34,6 +32,12 @@ class Student extends Model
         'deleted_at' => 'datetime'
     ];
 
+    public static $rules = [
+        'registration_number'=> 'string|required',
+        'name'=> 'string|required',
+        'email'=> 'email|required'
+    ];
+
     public function cohortStudents()
     {
         return $this->hasMany(CohortStudent::class, 'student_id', 'id');
@@ -42,5 +46,10 @@ class Student extends Model
     public function cohorts()
     {
         return $this->hasManyThrough(Cohort::class, CohortStudent::class, 'student_id', 'id', 'id', 'cohort_id');
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class, 'student_id', 'id');
     }
 }

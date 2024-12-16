@@ -17,12 +17,12 @@ export default function StudentList({
 }: StudentListProps) {
     const filteredStudents = students.filter(
         student =>
-            student.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             student.registration_number.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const getAttendanceStatus = (studentId: number) => {
-        return attendance.find(a => a.cohort_student_id === Number(studentId))?.attendance_status;
+        return attendance.find(a => a.student_id === Number(studentId))?.attendance_status;
     };
 
     return (
@@ -36,7 +36,7 @@ export default function StudentList({
                         className="py-3 flex items-center justify-between"
                     >
                         <div>
-                            <h3 className="font-medium text-gray-900">{student.first_name} {student.last_name}</h3>
+                            <h3 className="font-medium text-gray-900">{student.name}</h3>
                             <p className="text-sm text-gray-600">{student.registration_number}</p>
                         </div>
                         <div className="flex gap-2">

@@ -1,29 +1,40 @@
-import React, { useState } from 'react';
+import React, { FormEventHandler, useState } from 'react';
 import { X } from 'lucide-react';
 import { Schedule } from '@/types';
+import SearchableSelect from '@/Components/SearchableSelect';
+import { useForm } from '@inertiajs/react';
 
 interface ScheduleFormProps {
     onClose: () => void;
     onSubmit: (schedule: Omit<Schedule, 'id'>) => void;
     initialDate: Date;
+    units: any[];
+    cohorts: any[];
 }
 
-export default function ScheduleForm({ onClose, onSubmit, initialDate }: ScheduleFormProps) {
-    const [formData, setFormData] = useState({
+export default function ScheduleForm({ onClose, onSubmit, initialDate, units, cohorts }: ScheduleFormProps) {
+    initialDate.setHours(initialDate.getHours() + 3);
+    initialDate.setMinutes(0);
+    const { data, setData, post, processing, errors, reset } = useForm({
         attendance_link: '',
-        unit_id: 1,
-        cohort_id: 1,
-        day: initialDate.toISOString().split('T')[0],
-        start_time: '09:00',
-        end_time: '11:00',
+        unit_id: 0,
+        cohort_id: 0,
+        day: new Date(initialDate.setHours(initialDate.getHours() + 1)).toISOString().split('T')[0],
+        start_time: new Date(initialDate.setHours(initialDate.getHours() + 1)).toISOString().split('T')[1].slice(0, 5),
+        end_time: new Date(initialDate.setHours(initialDate.getHours() + 2)).toISOString().split('T')[1].slice(0, 5),
         venue: '',
         status: 'active',
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        onSubmit(formData);
-    };
+        post(route('schedule.store'), {
+            onFinish: () => {
+                reset('attendance_link', 'unit_id', 'cohort_id', 'day', 'start_time', 'end_time', 'venue', 'status');
+                onClose();
+            },
+        });
+    }
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -38,38 +49,32 @@ export default function ScheduleForm({ onClose, onSubmit, initialDate }: Schedul
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Unit
-                        </label>
-                        <select
-                            required
-                            className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                            value={formData.unit_id}
-                            onChange={e => setFormData(prev => ({ ...prev, unit_id: Number(e.target.value) }))}
-                        >
-                            <option value="">Select a unit</option>
-                            <option value="1">Programming 101</option>
-                            <option value="2">Data Structures</option>
-                        </select>
-                    </div>
+                <form onSubmit={submit} className="p-6 space-y-4">
+                    <SearchableSelect
+                        label="Unit"
+                        placeholder="Select a unit"
+                        options={units.map(unit => ({
+                            id: unit.id,
+                            label: unit.name,
+                            sublabel: unit.code,
+                        }))}
+                        value={data.unit_id}
+                        onChange={(value) => setData(prev => ({ ...prev, unit_id: value }))}
+                        required
+                    />
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Cohort
-                        </label>
-                        <select
-                            required
-                            className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                            value={formData.cohort_id}
-                            onChange={e => setFormData(prev => ({ ...prev, cohort_id: Number(e.target.value) }))}
-                        >
-                            <option value="">Select a cohort</option>
-                            <option value="1">Year 1 2024</option>
-                            <option value="2">Year 2 2023</option>
-                        </select>
-                    </div>
+                    <SearchableSelect
+                        label="Cohort"
+                        placeholder="Select a cohort"
+                        options={cohorts.map(cohort => ({
+                            id: cohort.id,
+                            label: cohort.name,
+                            sublabel: cohort.code,
+                        }))}
+                        value={data.cohort_id}
+                        onChange={(value) => setData(prev => ({ ...prev, cohort_id: value }))}
+                        required
+                    />
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -79,8 +84,8 @@ export default function ScheduleForm({ onClose, onSubmit, initialDate }: Schedul
                             type="date"
                             required
                             className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                            value={formData.day}
-                            onChange={e => setFormData(prev => ({ ...prev, day: e.target.value }))}
+                            value={data.day}
+                            onChange={e => setData(prev => ({ ...prev, day: e.target.value }))}
                         />
                     </div>
 
@@ -93,8 +98,8 @@ export default function ScheduleForm({ onClose, onSubmit, initialDate }: Schedul
                                 type="time"
                                 required
                                 className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                value={formData.start_time}
-                                onChange={e => setFormData(prev => ({ ...prev, start_time: e.target.value }))}
+                                value={data.start_time}
+                                onChange={e => setData(prev => ({ ...prev, start_time: e.target.value }))}
                             />
                         </div>
                         <div>
@@ -105,8 +110,8 @@ export default function ScheduleForm({ onClose, onSubmit, initialDate }: Schedul
                                 type="time"
                                 required
                                 className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                value={formData.end_time}
-                                onChange={e => setFormData(prev => ({ ...prev, end_time: e.target.value }))}
+                                value={data.end_time}
+                                onChange={e => setData(prev => ({ ...prev, end_time: e.target.value }))}
                             />
                         </div>
                     </div>
@@ -120,8 +125,8 @@ export default function ScheduleForm({ onClose, onSubmit, initialDate }: Schedul
                             required
                             placeholder="Enter venue"
                             className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                            value={formData.venue}
-                            onChange={e => setFormData(prev => ({ ...prev, venue: e.target.value }))}
+                            value={data.venue}
+                            onChange={e => setData(prev => ({ ...prev, venue: e.target.value }))}
                         />
                     </div>
 

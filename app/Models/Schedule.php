@@ -15,6 +15,7 @@ class Schedule extends Model
 
     protected $fillable = [
         'attendance_link',
+        'user_id',
         'unit_id',
         'cohort_id',
         'day',
@@ -36,6 +37,20 @@ class Schedule extends Model
         'deleted_at' => 'datetime'
     ];
 
+    public static $rules = [
+        'unit_id' => 'required|integer|exists:units,id',
+        'cohort_id' => 'required|integer|exists:cohorts,id',
+        'day' => 'required|string',
+        'start_time' => 'required|string',
+        'end_time' => 'required|string',
+        'venue' => 'required|string'
+    ];
+
+    public function lecturer()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
     public function unit()
     {
         return $this->belongsTo(Unit::class, 'unit_id', 'id');
@@ -44,5 +59,10 @@ class Schedule extends Model
     public function cohort()
     {
         return $this->belongsTo(Cohort::class, 'cohort_id', 'id');
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class, 'schedule_id', 'id');
     }
 }

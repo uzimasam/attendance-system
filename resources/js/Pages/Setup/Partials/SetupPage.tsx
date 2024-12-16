@@ -4,20 +4,21 @@ import SchoolForm from './SchoolForm';
 import ProgramForm from './ProgramForm';
 import CohortForm from './CohortForm';
 import StudentUpload from './StudentUpload';
+import UnitForm from './UnitForm';
 
 type Step = 'school' | 'program' | 'unit' | 'cohort' | 'students';
 
-export default function SetupPage({ schools, programs }: any) {
+export default function SetupPage({ schools, units, programs, cohorts }: any) {
     const [currentStep, setCurrentStep] = useState<Step>('school');
     const [formData, setFormData] = useState<{
         school: { id: string } | null;
         program: { id: string } | null;
-        units: any[];
+        unit: { id: string } | null;
         cohort: { id: string } | null;
     }>({
         school: null,
         program: null,
-        units: [],
+        unit: null,
         cohort: null,
     });
 
@@ -48,6 +49,11 @@ export default function SetupPage({ schools, programs }: any) {
         handleNext();
     };
 
+    const handleUnitSubmit = (unitData: any) => {
+        setFormData(prev => ({ ...prev, unit: unitData }));
+        handleNext();
+    }
+
     const handleProgramSubmit = (programData: any) => {
         setFormData(prev => ({ ...prev, program: programData }));
         handleNext();
@@ -59,8 +65,10 @@ export default function SetupPage({ schools, programs }: any) {
     };
 
     const handleStudentsSubmit = (studentsData: any[]) => {
-        console.log('Students uploaded:', studentsData);
         // Here you would typically make an API call to save all the data
+        /**
+         * The data I
+         */
     };
 
     return (
@@ -111,41 +119,11 @@ export default function SetupPage({ schools, programs }: any) {
                 {/* Form Content */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     {currentStep === 'school' && <SchoolForm onSubmit={handleSchoolSubmit} schools={schools} />}
-                    {currentStep === 'program' && <ProgramForm onSubmit={handleProgramSubmit} programs={programs} schools={schools} />}
-                    {currentStep === 'cohort' && (
-                        <CohortForm
-                            onSubmit={handleCohortSubmit}
-                            programId={formData.program?.id ?? ''}
-                            units={formData.units}
-                        />
+                    {currentStep === 'unit' && <UnitForm onSubmit={handleUnitSubmit} units={units} schools={schools} schoolId={formData.school?.id ?? ''} />}
+                    {currentStep === 'program' && <ProgramForm onSubmit={handleProgramSubmit} programs={programs} schools={schools} schoolId={formData.school?.id ?? ''} />}
+                    {currentStep === 'cohort' && <CohortForm onSubmit={handleCohortSubmit} cohortId={formData.cohort?.id ?? ''} cohorts={cohorts} unit={formData.unit?.id ?? null} programId={formData.program?.id ?? ''} />}
+                    {currentStep === 'students' && (<StudentUpload onSubmit={handleStudentsSubmit} cohortId={formData.cohort?.id ?? ''} />
                     )}
-                    {currentStep === 'students' && (
-                        <StudentUpload
-                            onSubmit={handleStudentsSubmit}
-                            cohortId={formData.cohort?.id ?? ''}
-                        />
-                    )}
-
-                    {/* Navigation Buttons */}
-                    <div className="flex justify-between mt-6">
-                        <button
-                            onClick={handleBack}
-                            className={`flex items-center gap-2 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors ${currentStep === 'school' ? 'invisible' : ''
-                                }`}
-                        >
-                            <ArrowLeft className="w-4 h-4" />
-                            Back
-                        </button>
-                        {currentStep !== 'students' && (
-                            <button
-                                onClick={handleNext}
-                                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors ml-auto"
-                            >
-                                Next
-                                <ArrowRight className="w-4 h-4" />
-                            </button>
-                        )}
-                    </div>
                 </div>
             </div>
         </div>

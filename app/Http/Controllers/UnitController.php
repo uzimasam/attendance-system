@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Unit;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Str;
 
 class UnitController extends Controller
 {
@@ -31,7 +32,28 @@ class UnitController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // validate the request
+        $request->validate(Unit::$rules);
+
+        // create a slug from the name
+        $slug = Str::slug($request->name);
+        $i = 1;
+        while (Unit::where('slug', $slug)->first()) {
+            $slug = $slug.'-'.$i;
+            $i++;
+        }
+
+        // create the unit
+        Unit::create([
+            'name' => $request->name,
+            'code' => $request->code,
+            'slug' => $slug,
+            'school_id' => $request->school_id,
+            'status' => 'active'
+        ]);
+
+        // redirect to the setup page
+        return redirect()->route('setup')->with('success','Unit created successfully');
     }
 
     /**

@@ -75,31 +75,6 @@ export default function AddCohortModal({ onClose, onSubmit, units }: AddCohortMo
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Assign Units
-                        </label>
-                        <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-lg divide-y">
-                            {units.map(unit => (
-                                <label
-                                    key={unit.id}
-                                    className="flex items-center p-3 hover:bg-gray-50 cursor-pointer"
-                                >
-                                    <input
-                                        type="checkbox"
-                                        checked={formData.unitIds.includes(unit.id)}
-                                        onChange={() => handleUnitToggle(unit.id)}
-                                        className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                                    />
-                                    <div className="ml-3">
-                                        <p className="font-medium text-gray-900">{unit.name}</p>
-                                        <p className="text-sm text-gray-600">{unit.code}</p>
-                                    </div>
-                                </label>
-                            ))}
-                        </div>
-                    </div>
-
                     <div className="flex justify-end gap-3 mt-6">
                         <button
                             type="button"

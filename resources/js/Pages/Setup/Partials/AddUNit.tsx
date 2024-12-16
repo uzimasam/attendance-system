@@ -1,33 +1,31 @@
 import React, { FormEventHandler, useState } from 'react';
 import { X } from 'lucide-react';
-import { Program } from '@/types';
+import { Unit } from '@/types';
 import { useForm } from '@inertiajs/react';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 
-interface AddProgramProps {
+interface AddUnitProps {
     readonly onClose: () => void;
-    readonly onSubmit: (schedule: Omit<Program, 'id'>) => void;
+    readonly onSubmit: (schedule: Omit<Unit, 'id'>) => void;
     readonly schools: any[];
     readonly schoolId: string;
 }
 
-export default function AddProgram({ onClose, onSubmit, schools, schoolId }: AddProgramProps) {
+export default function AddUnit({ onClose, onSubmit, schools, schoolId }: AddUnitProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         code: '',
-        duration: 4,
-        semesters: 2,
-        school_id: schoolId
+        school_id: schoolId,
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('program.store'), {
+        post(route('unit.store'), {
             // clear form fields after submission and close the modal
             onFinish: () => {
-                reset('name', 'code', 'duration', 'semesters');
+                reset('name', 'code', 'school_id');
                 onClose();
             },
         });
@@ -37,7 +35,7 @@ export default function AddProgram({ onClose, onSubmit, schools, schoolId }: Add
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl shadow-lg w-full max-w-lg mx-4">
                 <div className="flex items-center justify-between p-6 border-b border-gray-100">
-                    <h2 className="text-lg font-semibold text-gray-900">Add New Program</h2>
+                    <h2 className="text-lg font-semibold text-gray-900">Add New Unit</h2>
                     <button
                         onClick={onClose}
                         className="p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
@@ -48,12 +46,12 @@ export default function AddProgram({ onClose, onSubmit, schools, schoolId }: Add
 
                 <form onSubmit={submit} className="p-6 space-y-4">
                     <div>
-                        <InputLabel htmlFor="name">Program Name</InputLabel>
+                        <InputLabel htmlFor="name">Unit Name</InputLabel>
                         <TextInput
                             id="name"
                             type="text"
                             name="name"
-                            placeholder="e.g., Bachelor of Science in Computer Science"
+                            placeholder="e.g., Professional Ethics and Information Law"
                             value={data.name}
                             className="mt-1 block w-full text-dark"
                             onChange={e => setData(prev => ({ ...prev, name: e.target.value }))}
@@ -63,53 +61,18 @@ export default function AddProgram({ onClose, onSubmit, schools, schoolId }: Add
                     </div>
 
                     <div className="mb-4">
-                        <InputLabel htmlFor="code">Program Code</InputLabel>
+                        <InputLabel htmlFor="code">Unit Code</InputLabel>
                         <TextInput
                             id="code"
                             type="text"
                             name="code"
-                            placeholder="e.g., CS"
+                            placeholder="e.g., COMP 420"
                             value={data.code}
                             className="mt-1 block w-full text-dark"
                             onChange={e => setData(prev => ({ ...prev, code: e.target.value }))}
                         />
 
                         <InputError message={errors.code} className="mt-2" />
-                    </div>
-
-                    <div className='mb-4'>
-                        <InputLabel htmlFor='duration'>Duration (Years)</InputLabel>
-                        <select
-                            required
-                            className='w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
-                            value={data.duration}
-                            onChange={e => setData(prev => ({ ...prev, duration: Number(e.target.value) }))}
-                        >
-                            {[2, 3, 4, 5].map(years => (
-                                <option key={years} value={years}>
-                                    {years} Years
-                                </option>
-                            ))}
-                        </select>
-
-                        <InputError message={errors.duration} className="mt-2" />
-                    </div>
-
-                    <div className='mb-4'>
-                        <InputLabel htmlFor='semesters'>Semesters (Per Year)</InputLabel>
-                        <select
-                            required
-                            className='w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
-                            value={data.semesters}
-                            onChange={e => setData(prev => ({ ...prev, semesters: Number(e.target.value) }))}
-                        >
-                            {[1, 2, 3].map(semesters => (
-                                <option key={semesters} value={semesters}>
-                                    {semesters} Semesters
-                                </option>
-                            ))}
-                        </select>
-                        <InputError message={errors.semesters} className="mt-2" />
                     </div>
 
                     <div className='mb-4'>
@@ -141,7 +104,7 @@ export default function AddProgram({ onClose, onSubmit, schools, schoolId }: Add
                             type="submit"
                             className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
                         >
-                            Add Program
+                            Add Unit
                         </button>
                     </div>
                 </form>

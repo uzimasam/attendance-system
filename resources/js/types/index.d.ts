@@ -1,9 +1,9 @@
 export interface Attendance {
     id: number;
-    cohort_student_id: number;
-    unit_id: number;
-    attendance_date: string;
+    schedule_id: number;
+    student_id: number;
     attendance_status: string;
+    student: Student;
 }
 
 export interface Cohort {
@@ -45,6 +45,9 @@ export interface Schedule {
     end_time: string;
     venue: string;
     status: string;
+    unit: Unit;
+    cohort: Cohort;
+    attendances: Attendance[];
 }
 
 export interface School {
@@ -56,10 +59,8 @@ export interface School {
 export interface Student {
     id: number;
     registration_number: string;
-    first_name: string;
-    last_name: string;
+    name: string;
     email: string;
-    phone: string;
     status: string;
 }
 

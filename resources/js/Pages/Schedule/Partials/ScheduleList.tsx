@@ -9,7 +9,13 @@ interface ScheduleListProps {
 }
 
 export default function ScheduleList({ schedules, selectedDate }: ScheduleListProps) {
-    const selectedDateStr = selectedDate.toISOString().split('T')[0];
+    const formatDate = (date: Date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+    const selectedDateStr = formatDate(selectedDate);
     const filteredSchedules = schedules.filter(s => s.day === selectedDateStr);
 
     return (
@@ -28,8 +34,8 @@ export default function ScheduleList({ schedules, selectedDate }: ScheduleListPr
                             className="p-4 rounded-lg border border-gray-100 hover:border-blue-100 transition-colors"
                         >
                             <div className="flex items-start justify-between mb-2">
-                                <h3 className="font-medium text-gray-900">Programming 101</h3>
-                                <span className="text-sm text-blue-600 font-medium">CSC 101</span>
+                                <h3 className="font-medium text-gray-900">{schedule.unit.name}</h3>
+                                <span className="text-sm text-blue-600 font-medium">{schedule.unit.code}</span>
                             </div>
 
                             <div className="space-y-2">
@@ -45,13 +51,13 @@ export default function ScheduleList({ schedules, selectedDate }: ScheduleListPr
 
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
                                     <Users className="w-4 h-4" />
-                                    <span>Year 1 2024</span>
+                                    <span>{schedule.cohort.name}</span>
                                 </div>
                             </div>
 
                             <div className="flex flex-col items-center">
                                 <Link
-                                    href={route('attendance')}
+                                    href={route('attendance.portal', schedule.attendance_link)}
                                     className="mt-4 w-full px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
                                 >
                                     Start Attendance

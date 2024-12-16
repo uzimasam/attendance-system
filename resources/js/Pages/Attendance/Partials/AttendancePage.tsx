@@ -1,69 +1,88 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, QrCode, UserCheck, UserX, Search, AlertCircle, XCircle, CheckCircle2 } from 'lucide-react';
-import { Student, Attendance } from '@/types';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, UserCheck, Search, CalendarCheck } from 'lucide-react';
+import { Student, Attendance, Schedule } from '@/types';
 import StudentList from './StudentList';
 import AttendanceStats from './AttendanceStats';
 import ScannerInput from './ScannerInput';
 import FinalizeAttendance from './FinalizeAttendance';
+import axios from 'axios';
 
-export default function AttendancePage() {
-    const [view, setView] = useState<'qr' | 'list'>('qr');
+interface AttendancePageProps {
+    readonly schedule: Schedule;
+}
+
+export default function AttendancePage({ schedule }: AttendancePageProps) {
+    const [view, setView] = useState<'qr' | 'list'>('list');
     const [searchQuery, setSearchQuery] = useState('');
     const [showFinalize, setShowFinalize] = useState(false);
-    const [attendance, setAttendance] = useState<Attendance[]>([
-        { id: 1, cohort_student_id: 1, unit_id: 1, attendance_status: 'present', attendance_date: new Date().toISOString() },
-        { id: 2, cohort_student_id: 2, unit_id: 1, attendance_status: 'absent', attendance_date: new Date().toISOString() },
-    ]);
+    const [attendances, setAttendances] = useState<Attendance[]>(schedule.attendances);
+    const [markedAttendance, setMarkedAttendance] = useState<Attendance[]>([]);
+    const [students, setStudents] = useState<Student[]>([]);
+    const [ready, setReady] = useState(false);
 
-    // Mock data - in a real app, this would come from an API
-    const mockStudents: Student[] = [
-        { id: 1, registration_number: 'CS/001/2024', first_name: 'Alice', last_name: 'Johnson', email: 'alice@jik.com', phone: '0712345678', status: 'active' },
-        { id: 2, registration_number: 'CS/002/2024', first_name: 'Bob', last_name: 'Smith', email: 'bob@jik.com', phone: '0712345678', status: 'active' },
-        { id: 3, registration_number: 'CS/003/2024', first_name: 'Charlie', last_name: 'Brown', email: 'browm@jik.com', phone: '0712345678', status: 'active' },
-    ];
+    useEffect(() => {
+        if (attendances.length > 0) {
+            setStudents(attendances.map((attendance: Attendance) => attendance.student));
+        }
+    }, [attendances]);
+
+    // check every 5 seconds if all students have been marked
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (students.length === markedAttendance.length) {
+                setReady(true);
+            }
+            setMarkedAttendance(attendances);
+        }, 50);
+        return () => clearInterval(interval);
+    }, [students, markedAttendance]);
 
     const handleMarkAttendance = (studentId: number, status: 'present' | 'absent' | 'excused') => {
-        setAttendance(prev => {
-            const existing = prev.find(a => a.cohort_student_id === studentId);
-            if (existing) {
-                return prev.map(a =>
-                    a.cohort_student_id === studentId
-                        ? { ...a, attendance_status: status, attendance_date: new Date().toISOString() }
-                        : a
-                );
+        axios.post(route('attendance.mark'), { student_id: studentId, status, schedule_id: schedule.id });
+        console.log('Marking attendance', studentId, status);
+        console.log(attendances);
+        // Update attendance status
+        setAttendances(attendances.map((attendance: Attendance) => {
+            if (attendance.student_id === studentId) {
+                return { ...attendance, attendance_status: status };
             }
-            return [...prev, {
-                id: Math.random(),
-                cohort_student_id: studentId,
-                unit_id: 1,
-                attendance_status: status,
-                attendance_date: new Date().toISOString()
-            }];
-        });
+            return attendance;
+        }));
     };
 
     const handleScanComplete = (regNo: string) => {
-        const student = mockStudents.find(s => s.registration_number === regNo);
+        const student = students.find(s => s.registration_number === regNo);
         if (student) {
             handleMarkAttendance(student.id, 'present');
         }
     };
 
-    const handleFinalize = (excusedStudents: string[]) => {
+    const handleFinalize = async (excusedStudents: string[]) => {
         // Mark excused students
         excusedStudents.forEach(studentId => {
             handleMarkAttendance(Number(studentId), 'excused');
         });
 
         // Mark remaining unmarked students as absent
-        mockStudents.forEach(student => {
-            const hasAttendance = attendance.some(a => a.cohort_student_id === student.id);
+        students.forEach(student => {
+            const hasAttendance = markedAttendance.some(a => a.student_id === student.id);
             if (!hasAttendance) {
                 handleMarkAttendance(student.id, 'absent');
             }
         });
 
         setShowFinalize(false);
+    };
+
+    // format date custom function. It will accept schedule.day, schedule.start_time, schedule.end_time end return time in format "Thursday, 12th August 2021, 8:00 AM - 10:00 AM"
+    const formatDate = (date: string, startTime: string, endTime: string) => {
+        const day = new Date(date).toLocaleDateString('en-US', { weekday: 'long' });
+        const month = new Date(date).toLocaleDateString('en-US', { month: 'long' });
+        const dayNum = new Date(date).toLocaleDateString('en-US', { day: 'numeric' });
+        const year = new Date(date).toLocaleDateString('en-US', { year: 'numeric' });
+        const start = new Date(`${date} ${startTime}`).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+        const end = new Date(`${date} ${endTime}`).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+        return `${day}, ${dayNum} ${month} ${year}, ${start} - ${end}`;
     };
 
     return (
@@ -77,8 +96,8 @@ export default function AttendancePage() {
                         <ArrowLeft className="w-5 h-5" />
                     </button>
                     <div>
-                        <h1 className="text-2xl font-semibold text-gray-900">Programming 101</h1>
-                        <p className="text-sm text-gray-600">Thursday, March 21, 2024 • 10:00 AM - 12:00 PM • Lab 2B</p>
+                        <h1 className="text-2xl font-semibold text-gray-900">{schedule.unit.name}</h1>
+                        <p className="text-sm text-gray-600">{formatDate(schedule.day, schedule.start_time, schedule.end_time)} • {schedule.venue}</p>
                     </div>
                 </div>
                 <button
@@ -90,10 +109,10 @@ export default function AttendancePage() {
             </div>
 
             <AttendanceStats
-                total={mockStudents.length}
-                present={attendance.filter(a => a.attendance_status === 'present').length}
-                absent={attendance.filter(a => a.attendance_status === 'absent').length}
-                excused={attendance.filter(a => a.attendance_status === 'excused').length}
+                total={attendances.length}
+                present={attendances.filter(a => a.attendance_status === 'present').length}
+                absent={attendances.filter(a => a.attendance_status === 'absent').length}
+                excused={attendances.filter(a => a.attendance_status === 'excused').length}
             />
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100">
@@ -102,8 +121,8 @@ export default function AttendancePage() {
                         <button
                             onClick={() => setView('list')}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${view === 'list'
-                                    ? 'bg-blue-600 text-white'
-                                    : 'text-gray-600 hover:bg-gray-100'
+                                ? 'bg-blue-600 text-white'
+                                : 'text-gray-600 hover:bg-gray-100'
                                 }`}
                         >
                             <UserCheck className="w-5 h-5" />
@@ -127,19 +146,21 @@ export default function AttendancePage() {
                             />
                         </div>
                         <StudentList
-                            students={mockStudents}
-                            attendance={attendance}
+                            students={students}
+                            attendance={markedAttendance}
                             searchQuery={searchQuery}
                             onMarkAttendance={handleMarkAttendance}
                         />
                     </div>
                 )}
+
             </div>
 
             {showFinalize && (
                 <FinalizeAttendance
-                    students={mockStudents}
-                    attendance={attendance}
+                    students={students}
+                    attendance={attendances}
+                    markedAttendance={markedAttendance}
                     onClose={() => setShowFinalize(false)}
                     onFinalize={handleFinalize}
                 />

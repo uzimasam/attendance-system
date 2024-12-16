@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CohortStudent;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
@@ -28,7 +29,34 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $students = $request->data;
+        foreach ($students as $student) {
+            // check if student exists
+            $existingStudent = Student::where('registration_number', $student['regNo'])->first();
+            if ($existingStudent) {
+                $existingStudent->name = $student['name'];
+                $existingStudent->email = $student['email'];
+                $existingStudent->save();
+            } else {
+                Student::create([
+                    'registration_number' => $student['regNo'],
+                    'name' => $student['name'],
+                    'email' => $student['email']
+                ]);
+            }
+            // setup cohort student
+            $cohortId = $student['cohortId'];
+            $setStudent = Student::where('registration_number', $student['regNo'])->first();
+            $existingCohortStudent = CohortStudent::where('cohort_id', $cohortId)->where('student_id', $setStudent->id)->first();
+            if (!$existingCohortStudent) {
+                CohortStudent::create([
+                    'cohort_id' => $cohortId,
+                    'student_id' => $setStudent->id
+                ]);
+            }
+        }
+
+        return redirect()->route('schedule')->with('success','Setup successful');
     }
 
     /**

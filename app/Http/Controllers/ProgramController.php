@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Cohort;
 use App\Models\Program;
 use App\Models\School;
+use App\Models\Unit;
+use App\Models\UserSchool;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Log;
 use Str;
 
 class ProgramController extends Controller
@@ -26,7 +27,9 @@ class ProgramController extends Controller
     {
         return Inertia::render('Setup/Index', [
             'schools' => School::all(),
+            'units' => Unit::all(),
             'programs' => Program::all(),
+            'cohorts' => Cohort::all()
         ]);
     }
 
@@ -43,7 +46,6 @@ class ProgramController extends Controller
      */
     public function store(Request $request)
     {
-        Log::info($request->all());
         // validate the request
         $request->validate(Program::$rules);
 
@@ -53,6 +55,15 @@ class ProgramController extends Controller
         while (Program::where('slug', $slug)->first()) {
             $slug = $slug.'-'.$i;
             $i++;
+        }
+
+        // link the user to the school
+        $existingLink = UserSchool::where("user_id", auth()->user()->id)->where("school_id", $request->school_id)->first();
+        if (! $existingLink) {
+            UserSchool::create([
+                "user_id"=> auth()->user()->id,
+                "school_id"=> $request->school_id,
+            ]);
         }
 
         // create the program

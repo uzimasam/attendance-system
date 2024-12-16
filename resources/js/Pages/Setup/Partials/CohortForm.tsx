@@ -1,121 +1,74 @@
 import React, { useState } from 'react';
-import { Users } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Users } from 'lucide-react';
 
 interface CohortFormProps {
     readonly onSubmit: (data: any) => void;
+    readonly cohortId: string;
+    readonly cohorts: any[];
+    readonly unit: string | null;
     readonly programId: string;
-    readonly units: ReadonlyArray<{
-        id: string;
-        name: string;
-        code: string;
-    }>;
 }
 
-export default function CohortForm({ onSubmit, programId, units }: CohortFormProps) {
+export default function CohortForm({ onSubmit, cohortId, cohorts, unit, programId }: CohortFormProps) {
+    cohorts = cohorts.filter(cohort => cohort.program_id === Number(programId));
     const [formData, setFormData] = useState({
-        name: '',
-        year: new Date().getFullYear(),
-        semester: 1,
-        unitIds: [] as string[],
+        id: ''
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit({ ...formData, id: Math.random().toString(), programId });
-    };
-
-    const handleUnitToggle = (unitId: string) => {
-        setFormData(prev => ({
-            ...prev,
-            unitIds: prev.unitIds.includes(unitId)
-                ? prev.unitIds.filter(id => id !== unitId)
-                : [...prev.unitIds, unitId],
-        }));
+        if (formData.id) {
+            onSubmit({ id: formData.id });
+        }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <>
             <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 bg-blue-50 rounded-lg">
                     <Users className="w-6 h-6 text-blue-600" />
                 </div>
-                <h2 className="text-xl font-semibold text-gray-900">Create Cohort</h2>
+                <h2 className="text-xl font-semibold text-gray-900">Select Cohort</h2>
             </div>
 
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">
-                    Cohort Name
-                </label>
-                <input
-                    type="text"
-                    required
-                    placeholder="e.g., September 2024 Intake"
-                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                    value={formData.name}
-                    onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="year">
-                        Academic Year
+                    <p className="text-sm font-medium my-2 text-gray-600">To get started, please select the cohort you want to setup.<br /> If the cohort is not listed, click the "Add Cohort" button above to add a new cohort.</p>
+                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="cohort">
+                        Select Cohort
                     </label>
                     <select
                         required
                         className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                        value={formData.year}
-                        onChange={e => setFormData(prev => ({ ...prev, year: Number(e.target.value) }))}
+                        value={formData.id}
+                        onChange={e => setFormData({ id: e.target.value })}
                     >
-                        {[0, 1, 2].map(offset => {
-                            const year = new Date().getFullYear() + offset;
-                            return (
-                                <option key={year} value={year}>
-                                    {year}
-                                </option>
-                            );
-                        })}
+                        <option value="">Select Cohort</option>
+                        {cohorts.map(cohort => (
+                            <option key={cohort.id} value={cohort.id}>{cohort.name}</option>
+                        ))}
                     </select>
                 </div>
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="semester">
-                        Semester
-                    </label>
-                    <select
-                        required
-                        className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                        value={formData.semester}
-                        onChange={e => setFormData(prev => ({ ...prev, semester: Number(e.target.value) }))}
+                {/* Navigation Buttons */}
+                <div className="flex justify-between mt-6">
+                    <button
+                        className={`flex items-center gap-2 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors`}
                     >
-                        <option value={1}>Semester 1</option>
-                        <option value={2}>Semester 2</option>
-                    </select>
-                </div>
-            </div>
+                        <ArrowLeft className="w-4 h-4" />
+                        Back
+                    </button>
 
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="units">
-                    Assign Units
-                </label>
-                <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-lg divide-y">
-                    {units.map(unit => (
-                        <div key={unit.id} className="flex items-center p-3 hover:bg-gray-50 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                id={unit.id}
-                                checked={formData.unitIds.includes(unit.id)}
-                                onChange={() => handleUnitToggle(unit.id)}
-                                className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                            />
-                            <label htmlFor={unit.id} className="ml-3">
-                                <p className="font-medium text-gray-900">{unit.name}</p>
-                                <p className="text-sm text-gray-600">{unit.code}</p>
-                            </label>
-                        </div>
-                    ))}
+                    <button
+                        type="submit"
+                        disabled={!formData.id}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Next
+                        <ArrowRight className="w-4 h-4" />
+                    </button>
                 </div>
-            </div>
-        </form>
+            </form>
+        </>
     );
 }

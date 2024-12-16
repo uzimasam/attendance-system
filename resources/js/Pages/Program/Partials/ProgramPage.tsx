@@ -45,12 +45,10 @@ export default function ProgramPage() {
     };
 
     const handleAddUnit = (unit: any) => {
-        console.log('Adding unit:', unit);
         setShowAddUnit(false);
     };
 
     const handleAddCohort = (cohort: any) => {
-        console.log('Adding cohort:', cohort);
         setShowAddCohort(false);
     };
 

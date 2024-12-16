@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, UserCheck, Search } from 'lucide-react';
+import { ArrowLeft, UserCheck, Search, CalendarCheck } from 'lucide-react';
 import { Student, Attendance, Schedule } from '@/types';
 import StudentList from './StudentList';
 import AttendanceStats from './AttendanceStats';
@@ -18,6 +18,7 @@ export default function AttendancePage({ schedule }: AttendancePageProps) {
     const [attendances, setAttendances] = useState<Attendance[]>(schedule.attendances);
     const [markedAttendance, setMarkedAttendance] = useState<Attendance[]>([]);
     const [students, setStudents] = useState<Student[]>([]);
+    const [ready, setReady] = useState(false);
 
     useEffect(() => {
         if (attendances.length > 0) {
@@ -25,24 +26,28 @@ export default function AttendancePage({ schedule }: AttendancePageProps) {
         }
     }, [attendances]);
 
-    const handleMarkAttendance = (studentId: number, status: 'present' | 'absent' | 'excused') => {
-        setMarkedAttendance(prev => {
-            const existing = prev.find(a => a.student_id === studentId);
-            if (existing) {
-                return prev.map(a =>
-                    a.student_id === studentId
-                        ? { ...a, attendance_status: status }
-                        : a
-                );
+    // check every 5 seconds if all students have been marked
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (students.length === markedAttendance.length) {
+                setReady(true);
             }
-            return [...prev, {
-                id: prev.length + 1, // or any unique id generation logic
-                schedule_id: schedule.id,
-                student_id: studentId,
-                attendance_status: status,
-                student: students.find(s => s.id === studentId) as Student
-            }];
-        });
+            setMarkedAttendance(attendances);
+        }, 50);
+        return () => clearInterval(interval);
+    }, [students, markedAttendance]);
+
+    const handleMarkAttendance = (studentId: number, status: 'present' | 'absent' | 'excused') => {
+        axios.post(route('attendance.mark'), { student_id: studentId, status, schedule_id: schedule.id });
+        console.log('Marking attendance', studentId, status);
+        console.log(attendances);
+        // Update attendance status
+        setAttendances(attendances.map((attendance: Attendance) => {
+            if (attendance.student_id === studentId) {
+                return { ...attendance, attendance_status: status };
+            }
+            return attendance;
+        }));
     };
 
     const handleScanComplete = (regNo: string) => {
@@ -67,23 +72,6 @@ export default function AttendancePage({ schedule }: AttendancePageProps) {
         });
 
         setShowFinalize(false);
-    };
-
-    const submitAttendance = async () => {
-        // ensure all students have been marked
-        if (students.length !== markedAttendance.length) {
-            // refetch marked attendance
-            alert('Please mark attendance for all students');
-        }
-        // submit attendance to the server via route('attendances.store')
-        try {
-            console.log('Submitting attendance:', markedAttendance); // Debugging line
-            await axios.post(route('attendances.store'), { attendances: markedAttendance });
-            alert('Attendance marked successfully');
-        } catch (error) {
-            console.error('Error submitting attendance:', error);
-            alert('Failed to mark attendance');
-        }
     };
 
     // format date custom function. It will accept schedule.day, schedule.start_time, schedule.end_time end return time in format "Thursday, 12th August 2021, 8:00 AM - 10:00 AM"
@@ -122,9 +110,9 @@ export default function AttendancePage({ schedule }: AttendancePageProps) {
 
             <AttendanceStats
                 total={attendances.length}
-                present={markedAttendance.filter(a => a.attendance_status === 'present').length}
-                absent={markedAttendance.filter(a => a.attendance_status === 'absent').length}
-                excused={markedAttendance.filter(a => a.attendance_status === 'excused').length}
+                present={attendances.filter(a => a.attendance_status === 'present').length}
+                absent={attendances.filter(a => a.attendance_status === 'absent').length}
+                excused={attendances.filter(a => a.attendance_status === 'excused').length}
             />
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100">

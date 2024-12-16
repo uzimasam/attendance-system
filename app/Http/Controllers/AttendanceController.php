@@ -41,7 +41,24 @@ class AttendanceController extends Controller
      */
     public function store(Request $request)
     {
-        Log::info($request->all());
+        foreach ($request->attendances as $attendance) {
+            $tomark = Attendance::where((['schedule_id' => $attendance['schedule_id'], 'student_id' => $attendance['student_id']]))->first();
+            if ($tomark) {
+                $tomark->attendance_status = $attendance['attendance_status'];
+                $tomark->save();
+            }
+        }
+        return redirect()->route('attendance');
+    }
+
+    public function mark(Request $request)
+    {
+        Log::info($request);
+        $tomark = Attendance::where((['schedule_id' => $request->schedule_id, 'student_id' => $request->student_id]))->first();
+        if ($tomark) {
+            $tomark->attendance_status = $request->status;
+            $tomark->save();
+        }
     }
 
     /**

@@ -9,11 +9,49 @@ interface AuthProps {
             readonly name: string;
         };
     };
+    readonly todayScheduleCount: number;
+    readonly yesterdayScheduleCount: number;
+}
+
+interface Schedule {
+    readonly id: number;
+    readonly unitId: number;
+    readonly cohortId: number;
+    readonly day: string;
+    readonly startTime: string;
+    readonly endTime: string;
+    readonly venue: string;
+    readonly status: string;
+}
+
+interface Unit {
+    readonly id: number;
+    readonly name: string;
+    readonly code: string;
+    readonly slug: string;
+    readonly schoolId: number;
+    readonly status: string;
 }
 
 function App({
+    yesterdayScheduleCount,
+    todayScheduleCount,
     auth
 }: AuthProps) {
+    // get the difference between today's and yesterday's schedule count
+    const scheduleTrend = todayScheduleCount - yesterdayScheduleCount;
+    let scheduleTrendText;
+    let scheduleTrendColor;
+    if (scheduleTrend === 0) {
+        scheduleTrendText = "No change";
+        scheduleTrendColor = "text-gray-600";
+    } else if (scheduleTrend < 0) {
+        scheduleTrendText = `${scheduleTrend} from yesterday`;
+        scheduleTrendColor = "text-red-600";
+    } else {
+        scheduleTrendText = `+${scheduleTrend} from yesterday`;
+        scheduleTrendColor = "text-green-600";
+    }
     return (
         <>
             <Head title="Dashboard" />
@@ -21,27 +59,31 @@ function App({
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                     <DashboardCard
                         title="Today's Classes"
-                        value="3"
+                        value={todayScheduleCount.toString()}
                         icon={<Calendar className="w-6 h-6 text-blue-600" />}
-                        trend="+1 from yesterday"
+                        trend={scheduleTrendText}
+                        trendColor={scheduleTrendColor}
                     />
                     <DashboardCard
                         title="Total Students"
                         value="245"
                         icon={<Users className="w-6 h-6 text-green-600" />}
                         trend="+12 this semester"
+                        trendColor='text-gray-600'
                     />
                     <DashboardCard
                         title="Active Units"
-                        value="6"
+                        value= "9"   
                         icon={<BookOpen className="w-6 h-6 text-purple-600" />}
                         trend="2 completing soon"
+                        trendColor='text-gray-600'
                     />
                     <DashboardCard
                         title="Avg. Attendance"
                         value="87%"
                         icon={<BarChart3 className="w-6 h-6 text-orange-600" />}
                         trend="+2.5% this week"
+                        trendColor='text-gray-600'
                     />
                 </div>
 
@@ -59,9 +101,10 @@ interface DashboardCardProps {
     value: string;
     icon: React.ReactNode;
     trend: string;
+    trendColor?: string;
 }
 
-const DashboardCard: React.FC<DashboardCardProps> = ({ title, value, icon, trend }) => (
+const DashboardCard: React.FC<DashboardCardProps> = ({ title, value, icon, trend, trendColor }) => (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
         <div className="flex justify-between items-start">
             <div>
@@ -72,7 +115,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({ title, value, icon, trend
                 {icon}
             </div>
         </div>
-        <p className="text-sm text-gray-600 mt-2">{trend}</p>
+        <p className={`text-sm ${trendColor}`}>{trend}</p>
     </div>
 );
 

@@ -71,4 +71,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Schedule::class, 'user_id', 'id');
     }
+
+    public function todaySchedules()
+    {
+        return $this->hasMany(Schedule::class, 'user_id', 'id')->whereDate('day', now()->format('Y-m-d'));
+    }
+
+    public function yesterdaySchedules()
+    {
+        return $this->hasMany(Schedule::class, 'user_id', 'id')->whereDate('day', now()->subDay()->format('Y-m-d'));
+    }
 }

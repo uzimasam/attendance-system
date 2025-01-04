@@ -1,6 +1,7 @@
 import React from 'react';
-import { Calendar, Users, BookOpen, BarChart3 } from 'lucide-react';
+import { Clock, MapPin, Calendar, Users, BookOpen, BarChart3 } from 'lucide-react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Schedule } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 
 interface AuthProps {
@@ -10,18 +11,8 @@ interface AuthProps {
         };
     };
     readonly todayScheduleCount: number;
+    readonly upcomingSchedules: Schedule[];
     readonly yesterdayScheduleCount: number;
-}
-
-interface Schedule {
-    readonly id: number;
-    readonly unitId: number;
-    readonly cohortId: number;
-    readonly day: string;
-    readonly startTime: string;
-    readonly endTime: string;
-    readonly venue: string;
-    readonly status: string;
 }
 
 interface Unit {
@@ -35,6 +26,7 @@ interface Unit {
 
 function App({
     yesterdayScheduleCount,
+    upcomingSchedules,
     todayScheduleCount,
     auth
 }: AuthProps) {
@@ -88,7 +80,7 @@ function App({
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <UpcomingClasses />
+                    <UpcomingClasses upcomingSchedules={upcomingSchedules} />
                     <RecentAttendance />
                 </div>
             </AuthenticatedLayout>
@@ -119,10 +111,48 @@ const DashboardCard: React.FC<DashboardCardProps> = ({ title, value, icon, trend
     </div>
 );
 
-const UpcomingClasses = () => (
+const UpcomingClasses = ({upcomingSchedules}: {upcomingSchedules: Schedule[]}) => (
+    console.log(upcomingSchedules),
     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Classes</h2>
-        <div className="space-y-4">
+            <div className="space-y-4">
+                {upcomingSchedules.map(schedule => (
+                        <div
+                            key={schedule.id}
+                            className="p-4 rounded-lg border border-gray-100 hover:border-blue-100 transition-colors"
+                        >
+                            <div className="flex items-start justify-between mb-2">
+                                <h3 className="font-medium text-gray-900">{schedule.unit.name}</h3>
+                                <span className="text-sm text-blue-600 font-medium">{schedule.unit.code}</span>
+                            </div>
+
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <Clock className="w-4 h-4" />
+                                    <span>{schedule.day} {schedule.start_time} - {schedule.end_time}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <MapPin className="w-4 h-4" />
+                                    <span>{schedule.venue}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <Users className="w-4 h-4" />
+                                    <span>{schedule.cohort.name}</span>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col items-center">
+                                <Link
+                                    href={route('attendance.portal', schedule.attendance_link)}
+                                    className="mt-4 w-full px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                                >
+                                    Start Attendance
+                                </Link>
+                            </div>
+                        </div>
+                    ))}
             {[
                 {
                     id: 1,

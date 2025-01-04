@@ -10,12 +10,14 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = auth()->user()->load('schedules')->load('todaySchedules')->load('yesterdaySchedules');
+        $user = auth()->user()->load('schedules')->load('todaySchedules')->load('yesterdaySchedules')->load('upcomingSchedules');
         $todayScheduleCount = $user->todaySchedules->count();
         $yesterdayScheduleCount = $user->yesterdaySchedules->count();
+        $upcomingSchedules = $user->upcomingSchedules;
         return Inertia::render("Dashboard", [
-            'todayScheduleCount'=> $todayScheduleCount,
-            'yesterdayScheduleCount'=> $yesterdayScheduleCount
+            'todayScheduleCount' => $todayScheduleCount,
+            'upcomingSchedules' => $upcomingSchedules,
+            'yesterdayScheduleCount' => $yesterdayScheduleCount
         ]);
     }
 }

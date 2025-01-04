@@ -81,4 +81,17 @@ class User extends Authenticatable
     {
         return $this->hasMany(Schedule::class, 'user_id', 'id')->whereDate('day', now()->subDay()->format('Y-m-d'));
     }
+
+    public function upcomingSchedules()
+    {
+        return $this->hasMany(Schedule::class, 'user_id', 'id')
+            ->where(function ($query) {
+                $query->whereDate('day', '>', now()->format('Y-m-d'))
+                    ->orWhere(function ($query) {
+                        $query->whereDate('day', now()->format('Y-m-d'))
+                            ->where('end_time', '>', now()->format('H:i:s'));
+                    });
+            })
+            ->with(['cohort', 'unit']);
+    }
 }

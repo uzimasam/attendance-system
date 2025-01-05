@@ -10,7 +10,10 @@ interface AuthProps {
             readonly name: string;
         };
     };
+    readonly newStudentCount: number;
+    readonly studentCount: number;
     readonly todayScheduleCount: number;
+    readonly unitCount: number;
     readonly upcomingSchedules: Schedule[];
     readonly yesterdayScheduleCount: number;
 }
@@ -27,7 +30,10 @@ interface Unit {
 function App({
     yesterdayScheduleCount,
     upcomingSchedules,
+    unitCount,
     todayScheduleCount,
+    studentCount,
+    newStudentCount,
     auth
 }: AuthProps) {
     // get the difference between today's and yesterday's schedule count
@@ -44,6 +50,16 @@ function App({
         scheduleTrendText = `+${scheduleTrend} from yesterday`;
         scheduleTrendColor = "text-green-600";
     }
+    let studentTrendText;
+    let studentTrendColor;
+    // get the difference between newStudentCount and studentCount
+    if (newStudentCount === 0) {
+        studentTrendText = "No new students";
+        studentTrendColor = "text-gray-600";
+    } else {
+        studentTrendText = `+${newStudentCount} new students`;
+        studentTrendColor = "text-green-600";
+    }
     return (
         <>
             <Head title="Dashboard" />
@@ -58,14 +74,14 @@ function App({
                     />
                     <DashboardCard
                         title="Total Students"
-                        value="245"
+                        value={studentCount.toString()}
                         icon={<Users className="w-6 h-6 text-green-600" />}
-                        trend="+12 this semester"
-                        trendColor='text-gray-600'
+                        trend={studentTrendText}
+                        trendColor={studentTrendColor}
                     />
                     <DashboardCard
                         title="Active Units"
-                        value= "9"   
+                        value= {unitCount.toString()}
                         icon={<BookOpen className="w-6 h-6 text-purple-600" />}
                         trend="2 completing soon"
                         trendColor='text-gray-600'

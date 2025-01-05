@@ -3,7 +3,15 @@ import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Head, Link } from '@inertiajs/react';
 
-export default function App() {
+interface LandingProps {
+    readonly lectureCount: number;
+    readonly studentCount: number;
+}
+
+export default function App({
+    lectureCount,
+    studentCount,
+}: LandingProps) {
     return (
         <>
             <Head title="Welcome" />
@@ -94,11 +102,11 @@ export default function App() {
                     <div className="container mx-auto px-4 py-16">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div className="text-center">
-                                <div className="text-4xl font-bold text-gray-900 mb-2">10,000+</div>
+                                <div className="text-4xl font-bold text-gray-900 mb-2">{ studentCount }+</div>
                                 <div className="text-sm text-gray-500">Students Tracked</div>
                             </div>
                             <div className="text-center">
-                                <div className="text-4xl font-bold text-gray-900 mb-2">500+</div>
+                                <div className="text-4xl font-bold text-gray-900 mb-2">{ lectureCount }+</div>
                                 <div className="text-sm text-gray-500">Active Lecturers</div>
                             </div>
                             <div className="text-center">

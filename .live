@@ -22,12 +22,11 @@ LOG_DEPRECATIONS_CHANNEL=null
 LOG_LEVEL=debug
 
 DB_CONNECTION=pgsql
-DB_HOST=localhost
+DB_HOST=127.0.0.200
 DB_PORT=5432
 DB_DATABASE=eborqqjw_attendance
 DB_USERNAME=eborqqjw_access
 DB_PASSWORD=23+67Attendance
-DB_URL=postgresql://postgres:23+67Attendance@localhost/eborqqjw_attendance?sllmode=disable
 
 SESSION_DRIVER=database
 SESSION_LIFETIME=120

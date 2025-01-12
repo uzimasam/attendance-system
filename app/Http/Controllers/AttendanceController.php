@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-use Log;
 
 class AttendanceController extends Controller
 {
@@ -91,5 +91,22 @@ class AttendanceController extends Controller
     public function destroy(Attendance $attendance)
     {
         //
+    }
+
+    /**
+     * Function to receive attendance data from the attendance device
+     */
+    public function attendance(Request $request)
+    {
+        // log the request
+        Log::info($request);
+        /**
+         * Sample request
+         * {
+         *  "card_uid": "1234567890",
+         *  "device_token": "1234567890",
+         * }
+        */
+        return response()->json(['message' => 'Attendance Data received']);
     }
 }

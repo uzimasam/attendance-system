@@ -38,6 +38,11 @@ class Student extends Model
         'email'=> 'email|required'
     ];
 
+    public function card()
+    {
+        return $this->belongsTo(Card::class, 'student_id','id');
+    }
+
     public function cohortStudents()
     {
         return $this->hasMany(CohortStudent::class, 'student_id', 'id');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\Card;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -108,5 +109,50 @@ class AttendanceController extends Controller
          * }
         */
         return response()->json(['message' => 'Attendance Data received']);
+    }
+
+    /**
+     * Function to add a card and check if it is a student or lecturer
+     */
+    public function card(Request $request)
+    {
+        // log the request
+        Log::info($request);
+        /**
+         * Sample request
+         * {
+         *  "rfid_uid": "1234567890"
+         * }
+        */
+        $rfid_uid = $request->rfid_uid;
+        $card = Card::where('rfid_uid', $rfid_uid)->first();
+        if ($card) {
+            if ($card->status == 'pending') {
+                return response()->json(['message' => 'Card is already in system. Login to assign it to a user']);
+            } elseif ($card->status == 'assigned') {
+                if ($card->role = 'student') {
+                    $name = $card->student->name;
+                    $ref = $card->student->registration_number;
+                } elseif ($card->role = 'lecturer') {
+                    $name = $card->lecturer->name;
+                    $ref = $card->lecturer->staff_number;
+                } else {
+                    return response()->json(['message' => 'Card is assigned to an unknown role']);
+                }
+                $message = 'Card is already assigned to ' . $card->role .' - '. $name .', '.$ref;
+                return response()->json(['message' => $message]);
+            } elseif ($card->status == 'suspended') {
+                return response()->json(['message' => 'Card is suspended. Contact the admin']);
+            }
+        } else {
+            // create a new card
+            $card = new Card();
+            $card->rfid_uid = $rfid_uid;
+            $card->role = 'student';
+            $card->status = 'pending';
+            $card->save();
+            return response()->json(['message'=> 'Card added successfully. Login to assign it to a user']);
+        }
+        return response()->json(['message' => 'Card Data received']);
     }
 }

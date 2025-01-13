@@ -9,3 +9,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::get('/participate', [AttendanceController::class,'attendance'])->name('attend');
+Route::get('/card', [AttendanceController::class,'card'])->name('card');

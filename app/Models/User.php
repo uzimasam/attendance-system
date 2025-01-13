@@ -20,6 +20,7 @@ class User extends Authenticatable
         'name',
         'email',
         'staff_number',
+        'rfid_uid',
         'role',
         'password',
     ];
@@ -45,6 +46,11 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function card()
+    {
+        return $this->belongsTo(Card::class, 'rfid_uid', 'rfid_uid');
     }
 
     public function userSchools()

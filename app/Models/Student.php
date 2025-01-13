@@ -15,6 +15,7 @@ class Student extends Model
 
     protected $fillable = [
         'registration_number',
+        'rfid_uid',
         'name',
         'email',
         'status'
@@ -40,7 +41,7 @@ class Student extends Model
 
     public function card()
     {
-        return $this->belongsTo(Card::class, 'student_id','id');
+        return $this->belongsTo(Card::class, 'rfid_uid', 'rfid_uid');
     }
 
     public function cohortStudents()

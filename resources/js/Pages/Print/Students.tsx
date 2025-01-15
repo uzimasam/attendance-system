@@ -108,11 +108,11 @@ const StudentsWithCard = ({ studWithCard = [], availableCards }: { studWithCard:
                                 >
                                     <option value="">Select Card</option>
                                     <option key={student.card.id} value={student.card.id} disabled>
-                                        {student.card.id}
+                                        Card {student.card.id}
                                     </option>
                                     {availableCards.map(card => (
                                         <option key={card.id} value={card.id}>
-                                            {card.id}
+                                            Card {card.id}
                                         </option>
                                     ))}
                                 </select>
@@ -188,7 +188,7 @@ const StudentsWithoutCard = ({ studWithoutCard, availableCards }: { studWithoutC
                                     <option value="">Select Card</option>
                                     {availableCards.map(card => (
                                         <option key={card.id} value={card.id}>
-                                            {card.id}
+                                            Card {card.id}
                                         </option>
                                     ))}
                                 </select>

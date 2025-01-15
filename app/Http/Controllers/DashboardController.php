@@ -60,11 +60,11 @@ class DashboardController extends Controller
         // Separate lecturers with and without cards
         $lectWithCard = $lecturers->filter(function ($lecturer) {
             return $lecturer->card !== null;
-        });
+        })->values();
 
         $lectWithoutCard = $lecturers->filter(function ($lecturer) {
             return $lecturer->card === null;
-        });
+        })->values();
 
         // Retrieve pending cards
         $cards = Card::where('status', 'pending')->get();

@@ -81,7 +81,7 @@ function App({
                     />
                     <DashboardCard
                         title="Active Units"
-                        value= {unitCount.toString()}
+                        value={unitCount.toString()}
                         icon={<BookOpen className="w-6 h-6 text-purple-600" />}
                         trend="2 completing soon"
                         trendColor='text-gray-600'
@@ -127,11 +127,24 @@ const DashboardCard: React.FC<DashboardCardProps> = ({ title, value, icon, trend
     </div>
 );
 
-const UpcomingClasses = ({upcomingSchedules}: {upcomingSchedules: Schedule[]}) => (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Classes</h2>
+const UpcomingClasses = ({ upcomingSchedules }: { upcomingSchedules: Schedule[] }) => {
+    return (
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Classes</h2>
             <div className="space-y-4">
-                {upcomingSchedules.map(schedule => (
+                {upcomingSchedules.length === 0 ? (
+                    <div 
+                    className="p-4 rounded-lg border border-gray-50 bg-gray-50 hover:border-blue-100 transition-colors text-center">
+                    <h3 className="font-medium text-gray-600 mb-2">No upcoming classes</h3>
+                        <Link
+                            href={route('schedule')}
+                            className="mt-4 w-full px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                            >
+                            View Schedule
+                        </Link>
+                    </div>
+                ) : (
+                    upcomingSchedules.map(schedule => (
                         <div
                             key={schedule.id}
                             className="p-4 rounded-lg border border-gray-100 hover:border-blue-100 transition-colors"
@@ -167,40 +180,12 @@ const UpcomingClasses = ({upcomingSchedules}: {upcomingSchedules: Schedule[]}) =
                                 </Link>
                             </div>
                         </div>
-                    ))}
-            {[
-                {
-                    id: 1,
-                    unit: "Programming 101",
-                    time: "10:00 AM - 12:00 PM",
-                    venue: "Lab 2B",
-                    cohort: "Year 1 2024"
-                },
-                {
-                    id: 2,
-                    unit: "Data Structures",
-                    time: "2:00 PM - 4:00 PM",
-                    venue: "Room 15",
-                    cohort: "Year 2 2023"
-                }
-            ].map((session, index) => (
-                <div key={`${session.id}`} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div>
-                        <h3 className="font-medium text-gray-900">{session.unit}</h3>
-                        <p className="text-sm text-gray-600">{session.cohort}</p>
-                        <p className="text-sm text-gray-600">{session.venue}</p>
-                    </div>
-                    <div className="text-right">
-                        <p className="mb-2 text-sm font-medium text-gray-900">{session.time}</p>
-                        <Link href={route('attendance')} className="mt-2 px-2 py-1  text-sm font-medium bg-gray-200 rounded-lg text-gray-800 hover:bg-gray-400 transition-colors">
-                            Start Attendance
-                        </Link>
-                    </div>
-                </div>
-            ))}
+                    ))
+                )}
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 const RecentAttendance = () => (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">

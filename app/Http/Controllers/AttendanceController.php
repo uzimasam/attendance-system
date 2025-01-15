@@ -68,7 +68,7 @@ class AttendanceController extends Controller
          *  "device_token": "1234567890",
          * }
         */
-        return response()->json(['message' => 'Attendance Data received']);
+        return response('Attendance Data received');
     }
 
     /**

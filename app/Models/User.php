@@ -20,7 +20,7 @@ class User extends Authenticatable
         'name',
         'email',
         'staff_number',
-        'rfid_uid',
+        'card_id',
         'role',
         'password',
     ];
@@ -50,7 +50,7 @@ class User extends Authenticatable
 
     public function card()
     {
-        return $this->belongsTo(Card::class, 'rfid_uid', 'rfid_uid');
+        return $this->belongsTo(Card::class, 'card_id', 'id');
     }
 
     public function userSchools()

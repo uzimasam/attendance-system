@@ -128,7 +128,6 @@ const DashboardCard: React.FC<DashboardCardProps> = ({ title, value, icon, trend
 );
 
 const UpcomingClasses = ({upcomingSchedules}: {upcomingSchedules: Schedule[]}) => (
-    console.log(upcomingSchedules),
     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Classes</h2>
             <div className="space-y-4">

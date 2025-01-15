@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, LayoutDashboard, Calendar, UserCircle, LogOut, School, BookOpen, Users, ChevronRight, Settings2Icon, HomeIcon } from 'lucide-react';
+import { Menu, LayoutDashboard, Calendar, UserCircle, LogOut, School, BookOpen, Users, ChevronRight, Settings2Icon, HomeIcon, BookUser, ContactRound } from 'lucide-react';
 import axios from 'axios';
 import { Link, usePage } from '@inertiajs/react';
 
@@ -103,6 +103,20 @@ export default function AuthenticatedLayout({ fullName, children }: { fullName: 
                     >
                         <LayoutDashboard className="w-5 h-5" />
                         Dashboard
+                    </Link>
+                    <Link
+                        href={route('printing.lecturers')}
+                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${isActive('printing.lecturers') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-200'}`}
+                    >
+                        <ContactRound className="w-5 h-5" />
+                        Lecturers
+                    </Link>
+                    <Link
+                        href={route('printing.students')}
+                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${isActive('printing.students') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-200'}`}
+                    >
+                        <BookUser className="w-5 h-5" />
+                        Students
                     </Link>
                     <Link
                         href={route('schedule')}

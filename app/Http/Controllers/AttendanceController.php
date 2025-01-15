@@ -90,10 +90,10 @@ class AttendanceController extends Controller
             if ($card->status == 'pending') {
                 return response()->json(['message' => 'Card is already in system. Login to assign it to a user']);
             } elseif ($card->status == 'assigned') {
-                if ($card->role = 'student') {
+                if ($card->role == 'student') {
                     $name = $card->student->name;
                     $ref = $card->student->registration_number;
-                } elseif ($card->role = 'lecturer') {
+                } elseif ($card->role == 'lecturer') {
                     $name = $card->lecturer->name;
                     $ref = $card->lecturer->staff_number;
                 } else {

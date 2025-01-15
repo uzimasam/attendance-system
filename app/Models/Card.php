@@ -62,7 +62,7 @@ class Card extends Model
      */
     public function student()
     {
-        return $this->hasOne(Student::class, 'rfid_uid', 'rfid_uid');
+        return $this->hasOne(Student::class, 'card_id', 'id');
     }
 
     /**
@@ -72,7 +72,7 @@ class Card extends Model
      */
     public function lecturer()
     {
-        return $this->hasOne(User::class, 'rfid_uid', 'rfid_uid');
+        return $this->hasOne(User::class, 'card_id', 'id');
     }
 
     /**

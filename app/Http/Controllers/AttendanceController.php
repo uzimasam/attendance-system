@@ -84,7 +84,7 @@ class AttendanceController extends Controller
          *  "rfid_uid": "1234567890"
          * }
         */
-        $rfid_uid = $request->rfid_uid;
+        $rfid_uid = $request->card_uid;
         $card = Card::where('rfid_uid', $rfid_uid)->first();
         if ($card) {
             if ($card->status == 'pending') {

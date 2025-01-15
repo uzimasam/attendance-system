@@ -88,7 +88,7 @@ class AttendanceController extends Controller
         $card = Card::where('rfid_uid', $rfid_uid)->first();
         if ($card) {
             if ($card->status == 'pending') {
-                return response('Card is already in system. Login to assign it to a user');
+                return response('Card '.$card->id .' is already in system. Login to assign it to a user');
             } elseif ($card->status == 'assigned') {
                 if ($card->role == 'student') {
                     $name = $card->student->name;
@@ -97,12 +97,12 @@ class AttendanceController extends Controller
                     $name = $card->lecturer->name;
                     $ref = $card->lecturer->staff_number;
                 } else {
-                    return response('Card is assigned to an unknown role');
+                    return response('Card '.$card->id .' is assigned to an unknown role');
                 }
                 $message = 'Card is already assigned to ' . $card->role .' - '. $name .', '.$ref;
                 return response($message);
             } elseif ($card->status == 'suspended') {
-                return response('Card is suspended. Contact the admin');
+                return response('Card '.$card->id .' is suspended. Contact the admin');
             }
         } else {
             // create a new card
@@ -111,7 +111,7 @@ class AttendanceController extends Controller
             $card->role = 'student';
             $card->status = 'pending';
             $card->save();
-            return response('Card added successfully. Login to assign it to a user');
+            return response('Card '.$card->id .' added successfully. Login to assign it to a user');
         }
         return response('Card Data received');
     }

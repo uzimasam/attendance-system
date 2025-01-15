@@ -83,9 +83,9 @@ class DashboardController extends Controller
         // validate the request
         $request->validate([
             'cardId' => 'required|exists:cards,id',
-            'lecturerId'=> 'required|exists:users,id'
+            'lecturerId' => 'required|exists:users,id'
         ]);
-        
+
         // get the card
         $card = Card::find($request->cardId);
         if ($card === null) {
@@ -97,7 +97,7 @@ class DashboardController extends Controller
         $lecturer = User::find($request->lecturerId);
         if ($lecturer === null) {
             Log::error('Lecturer not found');
-            return redirect(route('printing.lecturers'))->with('error','Lecturer not found');
+            return redirect(route('printing.lecturers'))->with('error', 'Lecturer not found');
         }
         $lecturer->card_id = $card->id;
         $lecturer->save();
@@ -106,7 +106,7 @@ class DashboardController extends Controller
         $card->role = 'lecturer';
         $card->save();
 
-        return redirect(route('printing.lecturers'))->with('success','Card assigned to Lecturer Successfully');
+        return redirect(route('printing.lecturers'))->with('success', 'Card assigned to Lecturer Successfully');
     }
 
     public function swapCard(Request $request)
@@ -116,7 +116,7 @@ class DashboardController extends Controller
 
         $request->validate([
             'cardId' => 'required|exists:cards,id',
-            'lecturerId'=> 'required|exists:users,id'
+            'lecturerId' => 'required|exists:users,id'
         ]);
 
         $card = Card::find($request->cardId);
@@ -128,7 +128,7 @@ class DashboardController extends Controller
         $lecturer = User::find($request->lecturerId);
         if ($lecturer === null) {
             Log::error('Lecturer not found');
-            return redirect(route('printing.lecturers'))->with('error','Lecturer not found');
+            return redirect(route('printing.lecturers'))->with('error', 'Lecturer not found');
         }
 
         $oldCard = $lecturer->card;
@@ -142,7 +142,7 @@ class DashboardController extends Controller
         $card->role = 'lecturer';
         $card->save();
 
-        return redirect(route('printing.lecturers'))->with('success','Lecturer card swapped successfully');
+        return redirect(route('printing.lecturers'))->with('success', 'Lecturer card swapped successfully');
     }
 
     public function printStudents()
@@ -161,8 +161,77 @@ class DashboardController extends Controller
 
         return Inertia::render('Print/Students', [
             'cards' => $cards,
-            'studentWithCard'=> $studentWithCard,
-            'studentWithoutCard'=> $studentWithoutCard
+            'studentWithCard' => $studentWithCard,
+            'studentWithoutCard' => $studentWithoutCard
         ]);
+    }
+
+    public function addStudentCard(Request $request)
+    {
+        Log::info('Adding card');
+        Log::info($request->all());
+        // validate the request
+        $request->validate([
+            'cardId' => 'required|exists:cards,id',
+            'studentId' => 'required|exists:students,id'
+        ]);
+
+        // get the card
+        $card = Card::find($request->cardId);
+        if ($card === null) {
+            Log::error('Card not found');
+            return redirect(route('printing.students'))->with('error', 'Card not found');
+        }
+
+        // get the student
+        $student = Student::find($request->studentId);
+        if ($student === null) {
+            Log::error('Student not found');
+            return redirect(route('printing.students'))->with('error', 'Student not found');
+        }
+        $student->card_id = $card->id;
+        $student->save();
+
+        $card->status = 'assigned';
+        $card->role = 'student';
+        $card->save();
+
+        return redirect(route('printing.students'))->with('success', 'Card assigned to Student Successfully');
+    }
+
+    public function swapStudentCard(Request $request)
+    {
+        Log::info('Swapping card');
+        Log::info($request->all());
+
+        $request->validate([
+            'cardId' => 'required|exists:cards,id',
+            'studentId' => 'required|exists:students,id'
+        ]);
+
+        $card = Card::find($request->cardId);
+        if ($card === null) {
+            Log::error('Card not found');
+            return redirect(route('printing.students'))->with('error', 'Card not found');
+        }
+
+        $student = Student::find($request->studentId);
+        if ($student === null) {
+            Log::error('Student not found');
+            return redirect(route('printing.students'))->with('error', 'Student not found');
+        }
+
+        $oldCard = $student->card;
+        $oldCard->status = 'suspended';
+        $oldCard->save();
+
+        $student->card_id = $card->id;
+        $student->save();
+
+        $card->status = 'assigned';
+        $card->role = 'student';
+        $card->save();
+
+        return redirect(route('printing.students'))->with('success', 'Student card swapped successfully');
     }
 }

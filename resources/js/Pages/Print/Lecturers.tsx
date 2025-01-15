@@ -79,7 +79,6 @@ const LecturersWithCard = ({ lectWithCard, availableCards }: { lectWithCard: any
 
     interface Card {
         id: string;
-        rfid_uid: string;
     }
 
     const handleSwapCard = (lecturerId: string) => {
@@ -109,11 +108,11 @@ const LecturersWithCard = ({ lectWithCard, availableCards }: { lectWithCard: any
                                 >
                                     <option value="">Select Card</option>
                                     <option key={lecturer.card.id} value={lecturer.card.id} disabled>
-                                        {lecturer.card.rfid_uid}
+                                        {lecturer.card.id}
                                     </option>
                                     {availableCards.map(card => (
                                         <option key={card.id} value={card.id}>
-                                            {card.rfid_uid}
+                                            {card.id}
                                         </option>
                                     ))}
                                 </select>
@@ -159,7 +158,6 @@ const LecturersWithoutCard = ({ lectWithoutCard, availableCards }: { lectWithout
 
     interface Card {
         id: string;
-        rfid_uid: string;
     }
 
     const handleAddCard = (lecturerId: string) => {
@@ -190,7 +188,7 @@ const LecturersWithoutCard = ({ lectWithoutCard, availableCards }: { lectWithout
                                     <option value="">Select Card</option>
                                     {availableCards.map(card => (
                                         <option key={card.id} value={card.id}>
-                                            {card.rfid_uid}
+                                            {card.id}
                                         </option>
                                     ))}
                                 </select>

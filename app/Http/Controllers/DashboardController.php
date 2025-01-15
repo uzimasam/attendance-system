@@ -147,22 +147,24 @@ class DashboardController extends Controller
 
     public function printStudents()
     {
+        // Retrieve students and load their cards
         $students = Student::with('card')->get();
 
-        $studentWithCard = $students->filter(function ($student) {
+        $studWithCard = $students->filter(function ($student) {
             return $student->card !== null;
-        });
-
-        $studentWithoutCard = $students->filter(function ($student) {
+        })->values(); // Ensure it returns a collection
+    
+        $studWithoutCard = $students->filter(function ($student) {
             return $student->card === null;
-        });
+        })->values(); // Ensure it returns a collection
 
+        // Retrieve available cards
         $cards = Card::where('status', 'pending')->get();
 
         return Inertia::render('Print/Students', [
+            'studWithCard' => $studWithCard,
+            'studWithoutCard' => $studWithoutCard,
             'cards' => $cards,
-            'studentWithCard' => $studentWithCard,
-            'studentWithoutCard' => $studentWithoutCard
         ]);
     }
 

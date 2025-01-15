@@ -8,15 +8,15 @@ interface PageProps {
             readonly name: string;
         };
     };
-    readonly studentWithCard: any;
-    readonly studentWithoutCard: any;
+    readonly studWithCard: any;
+    readonly studWithoutCard: any;
     readonly cards: any;
 }
 
 function App({
     cards,
-    studentWithCard,
-    studentWithoutCard,
+    studWithCard,
+    studWithoutCard,
     auth
 }: PageProps) {
     return (
@@ -24,8 +24,8 @@ function App({
             <Head title="Dashboard" />
             <AuthenticatedLayout fullName={auth.user.name}>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <StudentsWithCard studentWithCard={studentWithCard} availableCards={cards} />
-                    <StudentsWithoutCard studentWithoutCard={studentWithoutCard} availableCards={cards} />
+                    <StudentsWithCard studWithCard={studWithCard} availableCards={cards} />
+                    <StudentsWithoutCard studWithoutCard={studWithoutCard} availableCards={cards} />
                 </div>
             </AuthenticatedLayout>
         </>
@@ -55,7 +55,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({ title, value, icon, trend
     </div>
 );
 
-const StudentsWithCard = ({ studentWithCard, availableCards }: { studentWithCard: any[]; availableCards: any[] }) => {
+const StudentsWithCard = ({ studWithCard = [], availableCards }: { studWithCard: any[]; availableCards: any[] }) => {
     const [selectedCard, setSelectedCard] = useState<{ [key: string]: string }>({});
     const { post } = useForm();
 
@@ -93,12 +93,12 @@ const StudentsWithCard = ({ studentWithCard, availableCards }: { studentWithCard
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Students with Cards</h2>
             <div className="space-y-4">
-                {studentWithCard.length === 0 ? (
+                {studWithCard.length === 0 ? (
                     <div className="p-4 bg-blue-50 rounded-lg">
                         <h3 className="font-medium text-gray-600">No students have been set up with cards</h3>
                     </div>
                 ) : (
-                    studentWithCard.map(student => (
+                    studWithCard.map(student => (
                         <div key={`${student.id}`} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                             <div>
                                 <h3 className="font-medium text-gray-900">{student.name}</h3>
@@ -135,7 +135,7 @@ const StudentsWithCard = ({ studentWithCard, availableCards }: { studentWithCard
     );
 }
 
-const StudentsWithoutCard = ({ studentWithoutCard, availableCards }: { studentWithoutCard: any[]; availableCards: any[] }) => {
+const StudentsWithoutCard = ({ studWithoutCard, availableCards }: { studWithoutCard: any[]; availableCards: any[] }) => {
     const [selectedCard, setSelectedCard] = useState<{ [key: string]: string }>({});
     const { post } = useForm();
 
@@ -173,12 +173,12 @@ const StudentsWithoutCard = ({ studentWithoutCard, availableCards }: { studentWi
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Students without Cards</h2>
             <div className="space-y-4">
-                {studentWithoutCard.length === 0 ? (
+                {studWithoutCard.length === 0 ? (
                     <div className="p-4 bg-blue-50 rounded-lg">
                         <h3 className="font-medium text-gray-900">All students have been set up with cards</h3>
                     </div>
                 ) : (
-                    studentWithoutCard.map(student => (
+                    studWithoutCard.map(student => (
                         <div key={`${student.id}`} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                             <div>
                                 <h3 className="font-medium text-gray-900">{student.name}</h3>

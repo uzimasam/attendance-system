@@ -95,9 +95,10 @@ class User extends Authenticatable
         $currentTime = Carbon::now()->format('H:i:s');
     
         return $this->hasMany(Schedule::class, 'user_id', 'id')
-        ->with('unit') // Eager load the unit relationship
-        ->whereIn('status', ['active', 'marking'])
-            ->whereIn('status', ['active', 'marking'])
+        ->with('unit')
+        ->with('cohort')
+        ->where('status', 'active')
+            ->where('status', 'active')
             ->where(function ($query) use ($currentDate, $currentTime) {
                 $query->whereDate('day', '>', $currentDate)
                     ->orWhere(function ($query) use ($currentDate, $currentTime) {
@@ -107,14 +108,29 @@ class User extends Authenticatable
             });
     }
 
+    public function inProgressSchedules()
+    {
+        $currentDate = Carbon::now()->format('Y-m-d');
+        $currentTime = Carbon::now()->format('H:i:s');
+
+        return $this->hasMany(Schedule::class, 'user_id', 'id')
+            ->with('unit')
+            ->with('cohort')
+            ->whereIn('status', ['active', 'marking'])
+            ->whereDate('day', $currentDate)
+            ->whereTime('start_time', '<=', $currentTime)
+            ->whereTime('end_time', '>=', $currentTime);
+    }
+
     public function missedSchedules()
     {
         $currentDate = Carbon::now()->format('Y-m-d');
         $currentTime = Carbon::now()->format('H:i:s');
 
         return $this->hasMany(Schedule::class, 'user_id', 'id')
-            ->with('unit') // Eager load the unit relationship
-            ->whereIn('status', ['active'])
+            ->with('unit')
+            ->with('cohort')
+            ->where('status', 'active')
             ->where(function ($query) use ($currentDate, $currentTime) {
                 $query->whereDate('day', '<', $currentDate)
                     ->orWhere(function ($query) use ($currentDate, $currentTime) {
@@ -125,6 +141,20 @@ class User extends Authenticatable
     }
     public function doneSchedules()
     {
-        return $this->hasMany(Schedule::class, 'user_id', 'id')->where('status', 'marked');
+        return $this->hasMany(Schedule::class, 'user_id', 'id')->where('status', 'marked')->with('unit')->with('cohort');
+    }
+
+    public function averageAttendance()
+    {
+        $doneSchedules = $this->doneSchedules;
+        $percentagePresent = 0;
+        foreach ($doneSchedules as $schedule) {
+            $percentagePresent += $schedule->percentagePresent();
+        }
+        $total = $doneSchedules->count();
+        if ($total > 0){
+            return number_format($percentagePresent / $total,2);
+        }
+        return 100;
     }
 }

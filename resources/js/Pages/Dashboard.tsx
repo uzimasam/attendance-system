@@ -17,7 +17,9 @@ interface AuthProps {
     readonly upcomingSchedules: Schedule[];
     readonly doneSchedules: Schedule[];
     readonly missedSchedules: Schedule[];
+    readonly inProgressSchedules: Schedule[];
     readonly yesterdayScheduleCount: number;
+    readonly averageAttendance: number;
 }
 
 interface Unit {
@@ -30,10 +32,12 @@ interface Unit {
 }
 
 function App({
+    averageAttendance,
     yesterdayScheduleCount,
     upcomingSchedules,
     doneSchedules,
     missedSchedules,
+    inProgressSchedules,
     unitCount,
     todayScheduleCount,
     studentCount,
@@ -92,7 +96,7 @@ function App({
                     />
                     <DashboardCard
                         title="Avg. Attendance"
-                        value="87%"
+                        value={`${averageAttendance}%`}
                         icon={<BarChart3 className="w-6 h-6 text-orange-600" />}
                         trend="+2.5% this week"
                         trendColor='text-gray-600'
@@ -100,9 +104,10 @@ function App({
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <InProgressClasses inProgressSchedules={inProgressSchedules} />
                     <UpcomingClasses upcomingSchedules={upcomingSchedules} />
-                    <RecentAttendance doneSchedules={doneSchedules} />
                     <MissedAttendance missedSchedules={missedSchedules} />
+                    <RecentAttendance doneSchedules={doneSchedules} />
                 </div>
             </AuthenticatedLayout>
         </>
@@ -131,6 +136,66 @@ const DashboardCard: React.FC<DashboardCardProps> = ({ title, value, icon, trend
         <p className={`text-sm ${trendColor}`}>{trend}</p>
     </div>
 );
+
+const InProgressClasses = ({ inProgressSchedules }: { inProgressSchedules: Schedule[] }) => {
+    return (
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Classes In Progress</h2>
+            <div className="space-y-4">
+                {inProgressSchedules.length === 0 ? (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                        <h3 className="font-medium text-gray-900 mb-2">No classes in progress</h3>
+                        <Link
+                            href={route('schedule')}
+                            className="mt-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                        >
+                            View Schedule
+                        </Link>
+                    </div>
+                ) : (
+                    inProgressSchedules.map(schedule => (
+                        <div
+                            key={schedule.id}
+                            className="p-4 rounded-lg border border-gray-100 hover:border-blue-100 transition-colors"
+                        >
+                            <div className="flex items-start justify-between mb-2">
+                                <h3 className="font-medium text-gray-900">{schedule.unit?.name || 'No Unit'}</h3>
+                                <span className="text-sm text-blue-600 font-medium">{schedule.unit?.code || 'N/A'}</span>
+                            </div>
+
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <Clock className="w-4 h-4" />
+                                    <span>{schedule.day} {schedule.start_time} - {schedule.end_time}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <MapPin className="w-4 h-4" />
+                                    <span>{schedule.venue}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <Users className="w-4 h-4" />
+                                    <span>{schedule.cohort?.name || 'No Cohort'}</span>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col items-center">
+                                <Link
+                                    href={route('attendance.portal', schedule.attendance_link)}
+                                    className="mt-4 w-full px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                                >
+                                    Continue Attendance
+                                </Link>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+        </div>
+    );
+};
+
 
 const UpcomingClasses = ({ upcomingSchedules }: { upcomingSchedules: Schedule[] }) => {
     return (

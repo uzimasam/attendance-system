@@ -24,12 +24,13 @@ class DashboardController extends Controller
     }
     public function index()
     {
-        $user = auth()->user()->load('schedules')->load('todaySchedules')->load('yesterdaySchedules')->load('upcomingSchedules')->load('units')->load('doneSchedules')->load('missedSchedules');
+        $user = auth()->user()->load('schedules')->load('todaySchedules')->load('yesterdaySchedules')->load('upcomingSchedules')->load('units')->load('doneSchedules')->load('missedSchedules')->load('inProgressSchedules');
         $todayScheduleCount = $user->todaySchedules->count();
         $yesterdayScheduleCount = $user->yesterdaySchedules->count();
         $upcomingSchedules = $user->upcomingSchedules;
         $doneSchedules = $user->doneSchedules;
         $missedSchedules = $user->missedSchedules;
+        $inProgressSchedules = $user->inProgressSchedules;
         $unitCount = $user->units->count();
         // jan - april is sem 1, may - aug is sem 2, sept - dec is sem 3
         $studentCount = Student::count();
@@ -44,13 +45,16 @@ class DashboardController extends Controller
         $newStudentCount = Student::whereMonth('created_at', '>=', ($currentSemester - 1) * 4 + 1)
             ->whereMonth('created_at', '<=', $currentSemester * 4)
             ->count();
+        $averageAttendance = $user->averageAttendance();
         return Inertia::render("Dashboard", [
+            'averageAttendance' => $averageAttendance,
             'newStudentCount' => $newStudentCount,
             'studentCount' => $studentCount,
             'todayScheduleCount' => $todayScheduleCount,
             'upcomingSchedules' => $upcomingSchedules,
             'doneSchedules' => $doneSchedules,
             'missedSchedules' => $missedSchedules,
+            'inProgressSchedules' => $inProgressSchedules,
             'unitCount' => $unitCount,
             'yesterdayScheduleCount' => $yesterdayScheduleCount
         ]);

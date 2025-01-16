@@ -70,4 +70,11 @@ class Schedule extends Model
     {
         return $this->attendances()->where('student_id', $student_id)->first();
     }
+
+    public function percentagePresent()
+    {
+        $total = $this->attendances->count();
+        $present = $this->attendances->where('attendance_status', 'present')->count();
+        return $total > 0 ? ($present / $total) * 100 : 0;
+    }
 }

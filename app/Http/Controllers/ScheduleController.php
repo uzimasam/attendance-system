@@ -21,7 +21,7 @@ class ScheduleController extends Controller
     {
         // render view with Inertia to display all schedules
         $cohorts = Cohort::orderBy('code', 'asc')->get();
-        $schedules = Schedule::with('cohort')->with('unit')->get();
+        $schedules = Schedule::where('user_id', auth()->user()->id)->orderBy('day', 'asc')->orderBy('start_time', 'asc')->with('cohort')->with('unit')->get();
         $units = Unit::orderBy('code', 'asc')->get();
         return Inertia::render('Schedule/Index', [
             'cohorts' => $cohorts,

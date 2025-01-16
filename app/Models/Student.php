@@ -58,4 +58,9 @@ class Student extends Model
     {
         return $this->hasMany(Attendance::class, 'student_id', 'id');
     }
+
+    public function schedules()
+    {
+        return $this->hasManyThrough(Schedule::class, Attendance::class, 'student_id', 'id', 'id', 'schedule_id');
+    }
 }

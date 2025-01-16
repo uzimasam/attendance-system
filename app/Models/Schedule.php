@@ -65,4 +65,9 @@ class Schedule extends Model
     {
         return $this->hasMany(Attendance::class, 'schedule_id', 'id');
     }
+
+    public function attendanceByStudent($student_id)
+    {
+        return $this->attendances()->where('student_id', $student_id)->first();
+    }
 }

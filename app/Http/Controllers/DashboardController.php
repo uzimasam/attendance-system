@@ -24,10 +24,12 @@ class DashboardController extends Controller
     }
     public function index()
     {
-        $user = auth()->user()->load('schedules')->load('todaySchedules')->load('yesterdaySchedules')->load('upcomingSchedules')->load('units');
+        $user = auth()->user()->load('schedules')->load('todaySchedules')->load('yesterdaySchedules')->load('upcomingSchedules')->load('units')->load('doneSchedules')->load('missedSchedules');
         $todayScheduleCount = $user->todaySchedules->count();
         $yesterdayScheduleCount = $user->yesterdaySchedules->count();
         $upcomingSchedules = $user->upcomingSchedules;
+        $doneSchedules = $user->doneSchedules;
+        $missedSchedules = $user->missedSchedules;
         $unitCount = $user->units->count();
         // jan - april is sem 1, may - aug is sem 2, sept - dec is sem 3
         $studentCount = Student::count();
@@ -47,6 +49,8 @@ class DashboardController extends Controller
             'studentCount' => $studentCount,
             'todayScheduleCount' => $todayScheduleCount,
             'upcomingSchedules' => $upcomingSchedules,
+            'doneSchedules' => $doneSchedules,
+            'missedSchedules' => $missedSchedules,
             'unitCount' => $unitCount,
             'yesterdayScheduleCount' => $yesterdayScheduleCount
         ]);

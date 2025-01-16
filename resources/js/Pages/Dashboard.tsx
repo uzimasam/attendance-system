@@ -15,6 +15,8 @@ interface AuthProps {
     readonly todayScheduleCount: number;
     readonly unitCount: number;
     readonly upcomingSchedules: Schedule[];
+    readonly doneSchedules: Schedule[];
+    readonly missedSchedules: Schedule[];
     readonly yesterdayScheduleCount: number;
 }
 
@@ -30,6 +32,8 @@ interface Unit {
 function App({
     yesterdayScheduleCount,
     upcomingSchedules,
+    doneSchedules,
+    missedSchedules,
     unitCount,
     todayScheduleCount,
     studentCount,
@@ -97,7 +101,8 @@ function App({
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <UpcomingClasses upcomingSchedules={upcomingSchedules} />
-                    <RecentAttendance />
+                    <RecentAttendance doneSchedules={doneSchedules} />
+                    <MissedAttendance missedSchedules={missedSchedules} />
                 </div>
             </AuthenticatedLayout>
         </>
@@ -133,13 +138,12 @@ const UpcomingClasses = ({ upcomingSchedules }: { upcomingSchedules: Schedule[] 
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Classes</h2>
             <div className="space-y-4">
                 {upcomingSchedules.length === 0 ? (
-                    <div 
-                    className="p-4 rounded-lg border border-gray-50 bg-gray-50 hover:border-blue-100 transition-colors text-center">
-                    <h3 className="font-medium text-gray-600 mb-2">No upcoming classes</h3>
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                        <h3 className="font-medium text-gray-900 mb-2">No upcoming classes</h3>
                         <Link
                             href={route('schedule')}
-                            className="mt-4 w-full px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
-                            >
+                            className="mt-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                        >
                             View Schedule
                         </Link>
                     </div>
@@ -150,8 +154,8 @@ const UpcomingClasses = ({ upcomingSchedules }: { upcomingSchedules: Schedule[] 
                             className="p-4 rounded-lg border border-gray-100 hover:border-blue-100 transition-colors"
                         >
                             <div className="flex items-start justify-between mb-2">
-                                <h3 className="font-medium text-gray-900">{schedule.unit.name}</h3>
-                                <span className="text-sm text-blue-600 font-medium">{schedule.unit.code}</span>
+                                <h3 className="font-medium text-gray-900">{schedule.unit?.name || 'No Unit'}</h3>
+                                <span className="text-sm text-blue-600 font-medium">{schedule.unit?.code || 'N/A'}</span>
                             </div>
 
                             <div className="space-y-2">
@@ -167,7 +171,7 @@ const UpcomingClasses = ({ upcomingSchedules }: { upcomingSchedules: Schedule[] 
 
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
                                     <Users className="w-4 h-4" />
-                                    <span>{schedule.cohort.name}</span>
+                                    <span>{schedule.cohort?.name || 'No Cohort'}</span>
                                 </div>
                             </div>
 
@@ -187,39 +191,122 @@ const UpcomingClasses = ({ upcomingSchedules }: { upcomingSchedules: Schedule[] 
     );
 };
 
-const RecentAttendance = () => (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Attendance</h2>
-        <div className="space-y-4">
-            {[
-                {
-                    id: 1,
-                    unit: "Programming 101",
-                    date: "Today",
-                    attendance: "45/50",
-                    percentage: "90%"
-                },
-                {
-                    id: 2,
-                    unit: "Data Structures",
-                    date: "Yesterday",
-                    attendance: "38/42",
-                    percentage: "90.5%"
-                }
-            ].map((record) => (
-                <div key={record.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div>
-                        <h3 className="font-medium text-gray-900">{record.unit}</h3>
-                        <p className="text-sm text-gray-600">{record.date}</p>
+const RecentAttendance = ({ doneSchedules }: { doneSchedules: Schedule[] }) => {
+    return (
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Classes</h2>
+            <div className="space-y-4">
+                {doneSchedules.length === 0 ? (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                        <h3 className="font-medium text-gray-900 mb-2">No Recent classes</h3>
+                        <Link
+                            href={route('schedule')}
+                            className="mt-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                        >
+                            View Schedule
+                        </Link>
                     </div>
-                    <div className="text-right">
-                        <p className="text-sm font-medium text-gray-900">{record.attendance}</p>
-                        <p className="text-sm text-green-600">{record.percentage}</p>
-                    </div>
-                </div>
-            ))}
+                ) : (
+                    doneSchedules.map(schedule => (
+                        <div
+                            key={schedule.id}
+                            className="p-4 rounded-lg border border-gray-100 hover:border-blue-100 transition-colors"
+                        >
+                            <div className="flex items-start justify-between mb-2">
+                                <h3 className="font-medium text-gray-900">{schedule.unit?.name || 'No Unit'}</h3>
+                                <span className="text-sm text-blue-600 font-medium">{schedule.unit?.code || 'N/A'}</span>
+                            </div>
+
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <Clock className="w-4 h-4" />
+                                    <span>{schedule.day} {schedule.start_time} - {schedule.end_time}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <MapPin className="w-4 h-4" />
+                                    <span>{schedule.venue}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <Users className="w-4 h-4" />
+                                    <span>{schedule.cohort?.name || 'No Cohort'}</span>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col items-center">
+                                <Link
+                                    href={route('attendance.portal', schedule.attendance_link)}
+                                    className="mt-4 w-full px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                                >
+                                    View Report
+                                </Link>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
         </div>
-    </div>
-);
+    );
+};
+
+const MissedAttendance = ({ missedSchedules }: { missedSchedules: Schedule[] }) => {
+    return (
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Missed Classes</h2>
+            <div className="space-y-4">
+                {missedSchedules.length === 0 ? (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                        <h3 className="font-medium text-gray-900 mb-2">No Missed classes</h3>
+                        <Link
+                            href={route('schedule')}
+                            className="mt-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                        >
+                            View Schedule
+                        </Link>
+                    </div>
+                ) : (
+                    missedSchedules.map(schedule => (
+                        <div
+                            key={schedule.id}
+                            className="p-4 rounded-lg border border-gray-100 hover:border-blue-100 transition-colors"
+                        >
+                            <div className="flex items-start justify-between mb-2">
+                                <h3 className="font-medium text-gray-900">{schedule.unit?.name || 'No Unit'}</h3>
+                                <span className="text-sm text-blue-600 font-medium">{schedule.unit?.code || 'N/A'}</span>
+                            </div>
+
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <Clock className="w-4 h-4" />
+                                    <span>{schedule.day} {schedule.start_time} - {schedule.end_time}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <MapPin className="w-4 h-4" />
+                                    <span>{schedule.venue}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <Users className="w-4 h-4" />
+                                    <span>{schedule.cohort?.name || 'No Cohort'}</span>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col items-center">
+                                <Link
+                                    href={route('attendance.portal', schedule.attendance_link)}
+                                    className="mt-4 w-full px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                                >
+                                    Reschedule
+                                </Link>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+        </div>
+    );
+};
 
 export default App;

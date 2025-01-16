@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -90,14 +91,40 @@ class User extends Authenticatable
 
     public function upcomingSchedules()
     {
+        $currentDate = Carbon::now()->format('Y-m-d');
+        $currentTime = Carbon::now()->format('H:i:s');
+    
         return $this->hasMany(Schedule::class, 'user_id', 'id')
-            ->where(function ($query) {
-                $query->whereDate('day', '>', now()->format('Y-m-d'))
-                    ->orWhere(function ($query) {
-                        $query->whereDate('day', now()->format('Y-m-d'))
-                            ->where('end_time', '>', now()->format('H:i:s'));
+        ->with('unit') // Eager load the unit relationship
+        ->whereIn('status', ['active', 'marking'])
+            ->whereIn('status', ['active', 'marking'])
+            ->where(function ($query) use ($currentDate, $currentTime) {
+                $query->whereDate('day', '>', $currentDate)
+                    ->orWhere(function ($query) use ($currentDate, $currentTime) {
+                        $query->whereDate('day', $currentDate)
+                            ->whereTime('start_time', '>', $currentTime);
                     });
-            })
-            ->with(['cohort', 'unit']);
+            });
+    }
+
+    public function missedSchedules()
+    {
+        $currentDate = Carbon::now()->format('Y-m-d');
+        $currentTime = Carbon::now()->format('H:i:s');
+
+        return $this->hasMany(Schedule::class, 'user_id', 'id')
+            ->with('unit') // Eager load the unit relationship
+            ->whereIn('status', ['active'])
+            ->where(function ($query) use ($currentDate, $currentTime) {
+                $query->whereDate('day', '<', $currentDate)
+                    ->orWhere(function ($query) use ($currentDate, $currentTime) {
+                        $query->whereDate('day', $currentDate)
+                            ->whereTime('end_time', '<', $currentTime);
+                    });
+            });
+    }
+    public function doneSchedules()
+    {
+        return $this->hasMany(Schedule::class, 'user_id', 'id')->where('status', 'marked');
     }
 }

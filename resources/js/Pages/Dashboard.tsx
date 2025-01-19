@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Clock, MapPin, Calendar, Users, BookOpen, BarChart3 } from 'lucide-react';
+import { Clock, MapPin, Calendar, Users, BookOpen, BarChart3, CalendarArrowUp, CheckCircle } from 'lucide-react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Schedule } from '@/types';
 import { Head, Link } from '@inertiajs/react';
@@ -199,6 +199,19 @@ const InProgressClasses = ({ inProgressSchedules }: { inProgressSchedules: Sched
 
 
 const UpcomingClasses = ({ upcomingSchedules }: { upcomingSchedules: Schedule[] }) => {
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
+
+    const openForm = (schedule: Schedule) => {
+        setSelectedSchedule(schedule);
+        setIsFormOpen(true);
+    };
+
+    const closeForm = () => {
+        setIsFormOpen(false);
+        setSelectedSchedule(null);
+    };
+
     return (
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Classes</h2>
@@ -241,11 +254,19 @@ const UpcomingClasses = ({ upcomingSchedules }: { upcomingSchedules: Schedule[] 
                                 </div>
                             </div>
 
-                            <div className="flex flex-col items-center">
+                            <div className="flex flex-col sm:flex-row items-center sm:justify-between mt-4 space-y-2 sm:space-y-0 sm:space-x-2">
+                                <button
+                                    onClick={() => openForm(schedule)}
+                                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                                >
+                                    <CalendarArrowUp className="w-4 h-4" />
+                                    Reschedule
+                                </button>
                                 <Link
                                     href={route('attendance.portal', schedule.attendance_link)}
-                                    className="mt-4 w-full px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
                                 >
+                                    <CheckCircle className="w-4 h-4" />
                                     Start Attendance
                                 </Link>
                             </div>
@@ -253,6 +274,15 @@ const UpcomingClasses = ({ upcomingSchedules }: { upcomingSchedules: Schedule[] 
                     ))
                 )}
             </div>
+
+            {selectedSchedule && (
+                <RescheduleForm
+                    isOpen={isFormOpen}
+                    onClose={closeForm}
+                    onSubmit={closeForm}
+                    schedule={selectedSchedule}
+                />
+            )}
         </div>
     );
 };

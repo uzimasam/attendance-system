@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Clock, MapPin, Calendar, Users, BookOpen, BarChart3 } from 'lucide-react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Schedule } from '@/types';
 import { Head, Link } from '@inertiajs/react';
+import RescheduleForm from './Schedule/Partials/RescheduleForm';
 
 interface AuthProps {
     readonly auth: {
@@ -316,6 +317,19 @@ const RecentAttendance = ({ doneSchedules }: { doneSchedules: Schedule[] }) => {
 };
 
 const MissedAttendance = ({ missedSchedules }: { missedSchedules: Schedule[] }) => {
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
+
+    const openForm = (schedule: Schedule) => {
+        setSelectedSchedule(schedule);
+        setIsFormOpen(true);
+    };
+
+    const closeForm = () => {
+        setIsFormOpen(false);
+        setSelectedSchedule(null);
+    };
+
     return (
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Missed Classes</h2>
@@ -359,17 +373,26 @@ const MissedAttendance = ({ missedSchedules }: { missedSchedules: Schedule[] }) 
                             </div>
 
                             <div className="flex flex-col items-center">
-                                <Link
-                                    href={route('attendance.portal', schedule.attendance_link)}
+                                <button
+                                    onClick={() => openForm(schedule)}
                                     className="mt-4 w-full px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
-                                >
-                                    Reschedule
-                                </Link>
+                                    >
+                                    Reschedule Class
+                                </button>
                             </div>
                         </div>
                     ))
                 )}
             </div>
+
+            {selectedSchedule && (
+                <RescheduleForm
+                    isOpen={isFormOpen}
+                    onClose={closeForm}
+                    onSubmit={closeForm}
+                    schedule={selectedSchedule}
+                />
+            )}
         </div>
     );
 };

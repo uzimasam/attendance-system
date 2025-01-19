@@ -20,11 +20,14 @@ Route::middleware('auth')->group(function () {
     Route::get('students', [DashboardController::class, 'printStudents'])->name('printing.students');
     Route::post('students/addCard', [DashboardController::class,'addStudentCard'])->name('students.addCard');
     Route::post('students/swapCard', [DashboardController::class,'swapStudentCard'])->name('students.swapCard');
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');
+    Route::group(['prefix'=> 'profile'], function () {
+        Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
+        Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');
+    });
     Route::post('/schedule/store', [ScheduleController::class, 'store'])->name('schedule.store');
+    Route::post('/schedule/reschedule', [ScheduleController::class, 'reschedule'])->name('schedule.reschedule');
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance');
     Route::get('/attendance/{attendance_link}', [AttendanceController::class, 'portal'])->name('attendance.portal');
     Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('attendances.store');

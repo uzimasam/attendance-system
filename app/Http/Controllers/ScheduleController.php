@@ -82,6 +82,23 @@ class ScheduleController extends Controller
         return redirect()->route('schedule')->with('success', 'Class scheduled successfully');
     }
 
+    public function reschedule(Request $request)
+    {
+        $schedule = Schedule::find($request->schedule_id);
+        if (!$schedule)
+        {
+            return redirect()->back()->with('error','Schedule not found');
+        }
+
+        $schedule->update([
+            'day' => $request->day,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+            'venue' => $request->venue
+        ]);
+        return redirect()->back()->with('success','Schedule updated successfully');
+    }
+
     /**
      * Display the specified resource.
      */

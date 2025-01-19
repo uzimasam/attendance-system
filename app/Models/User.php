@@ -141,7 +141,7 @@ class User extends Authenticatable
     }
     public function doneSchedules()
     {
-        return $this->hasMany(Schedule::class, 'user_id', 'id')->where('status', 'marked')->with('unit')->with('cohort')->orderBy('day', 'desc');
+        return $this->hasMany(Schedule::class, 'user_id', 'id')->where('status', 'marked')->with('unit')->with('cohort');
     }
 
     public function averageAttendance()

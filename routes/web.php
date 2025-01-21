@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/store', [UnitController::class, 'store'])->name('unit.store');
     });
     Route::group(['prefix'=> 'program'], function () {
-        Route::get('/', [ProgramController::class, 'index'])->name('program');
+        Route::get('/{code}', [ProgramController::class, 'index'])->name('program');
         Route::post('/store', [ProgramController::class, 'store'])->name('program.store');
     });
     Route::get('/setup', [ProgramController::class, 'setup'])->name('setup');

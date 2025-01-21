@@ -5,45 +5,11 @@ import UnitList from './UnitList';
 import AddUnitModal from './AddUnitModal';
 import AddCohortModal from './AddCohortModal';
 
-export default function ProgramPage() {
+export default function ProgramPage({ program, averageAttendance, students, schedules }: any) {
     const [showAddUnit, setShowAddUnit] = useState(false);
     const [showAddCohort, setShowAddCohort] = useState(false);
 
     // Mock data - in a real app, this would come from an API
-    const program = {
-        id: '1',
-        name: 'Bachelor of Science in Computer Science',
-        code: 'BSC-CS',
-        description: 'A comprehensive program covering computer science fundamentals and advanced topics',
-        school: 'School of Computing and Informatics',
-        duration: '4 years',
-        units: [
-            {
-                id: '1',
-                code: 'CSC 101',
-                name: 'Programming 101',
-                credits: 4,
-                semester: 1,
-                year: 1,
-                cohorts: [
-                    { id: '1', name: 'Year 1 2024', studentCount: 45 },
-                    { id: '2', name: 'Year 2 2023', studentCount: 38 },
-                ],
-            },
-            {
-                id: '2',
-                code: 'CSC 102',
-                name: 'Data Structures',
-                credits: 4,
-                semester: 2,
-                year: 1,
-                cohorts: [
-                    { id: '3', name: 'Year 1 2024', studentCount: 42 },
-                ],
-            },
-        ],
-    };
-
     const handleAddUnit = (unit: any) => {
         setShowAddUnit(false);
     };
@@ -72,7 +38,7 @@ export default function ProgramPage() {
                         </div>
                         <div className="flex items-center gap-2 mt-1">
                             <School className="w-4 h-4 text-gray-400" />
-                            <p className="text-sm text-gray-600">{program.school}</p>
+                            <p className="text-sm text-gray-600">{program.school.name}</p>
                         </div>
                     </div>
                 </div>
@@ -95,7 +61,7 @@ export default function ProgramPage() {
             </div>
 
             {/* Program Stats */}
-            <ProgramStats program={program} />
+            <ProgramStats program={program} averageAttendance={averageAttendance} students={students} schedules={schedules} />
 
             {/* Units List */}
             <UnitList units={program.units} />

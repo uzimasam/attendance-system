@@ -16,10 +16,21 @@ class ProgramController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($code)
     {
+        $program = Program::where("code", $code)->first();
+        if (!$program) {
+            abort(404);
+        }
+        $program->load('units')->load('cohorts')->load('school')->load('schedules');
+        $averageAttendance = $program->averageAttendance();
+        $schedules = $program->schedules;
+        $students = $program->students();
         return Inertia::render('Program/Index', [
-            'programs' => Program::all(),
+            'averageAttendance' => $averageAttendance,
+            'program' => $program,
+            'schedules' => $schedules,
+            'students'=> $students
         ]);
     }
 

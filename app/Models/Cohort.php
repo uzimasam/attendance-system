@@ -54,11 +54,30 @@ class Cohort extends Model
 
     public function students()
     {
-        return $this->hasManyThrough(User::class, CohortStudent::class, 'cohort_id', 'id', 'id', 'student_id');
+        return $this->hasManyThrough(Student::class, CohortStudent::class, 'cohort_id', 'id', 'id', 'student_id');
     }
 
     public function schedules()
     {
         return $this->hasMany(Schedule::class, 'cohort_id', 'id');
+    }
+
+    public function doneSchedules()
+    {
+        return $this->hasMany(Schedule::class, 'cohort_id', 'id')->where('status', 'marked')->with('unit')->with('cohort');
+    }
+
+    public function averageAttendance()
+    {
+        $doneSchedules = $this->doneSchedules;
+        $percentagePresent = 0;
+        foreach ($doneSchedules as $schedule) {
+            $percentagePresent += $schedule->percentagePresent();
+        }
+        $total = $doneSchedules->count();
+        if ($total > 0){
+            return number_format($percentagePresent / $total,2);
+        }
+        return 100;
     }
 }

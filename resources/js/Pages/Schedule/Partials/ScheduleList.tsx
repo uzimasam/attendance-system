@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Clock, MapPin, Users } from 'lucide-react';
+import { BookCopy, Clock, MapPin, Users } from 'lucide-react';
 import { Schedule } from '@/types';
 import { Link } from '@inertiajs/react';
 import RescheduleForm from './RescheduleForm';
@@ -130,6 +130,11 @@ export default function ScheduleList({ schedules, selectedDate }: Readonly<Sched
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
                                     <Users className="w-4 h-4" />
                                     <span>{schedule.cohort.name}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <BookCopy className="w-4 h-4" />
+                                    <span className="font-medium">Topic: {schedule.topic}</span>
                                 </div>
                             </div>
 

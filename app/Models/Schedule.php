@@ -15,6 +15,7 @@ class Schedule extends Model
 
     protected $fillable = [
         'attendance_link',
+        'topic',
         'user_id',
         'unit_id',
         'cohort_id',
@@ -38,6 +39,7 @@ class Schedule extends Model
     ];
 
     public static $rules = [
+        'topic' => 'required|string',
         'unit_id' => 'required|integer|exists:units,id',
         'cohort_id' => 'required|integer|exists:cohorts,id',
         'day' => 'required|string',

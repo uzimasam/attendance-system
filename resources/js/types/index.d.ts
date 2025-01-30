@@ -37,6 +37,7 @@ export interface Program {
 
 export interface Schedule {
     id: number;
+    topic: string;
     attendance_link: string;
     unit_id: number;
     cohort_id: number;

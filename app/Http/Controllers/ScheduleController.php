@@ -54,6 +54,7 @@ class ScheduleController extends Controller
 
         // create the schedule
         $schedule = Schedule::create([
+            'topic' => $request->topic,
             'attendance_link' => $link,
             'user_id' => auth()->user()->id,
             'unit_id' => $request->unit_id,
@@ -79,7 +80,7 @@ class ScheduleController extends Controller
             }
         }
 
-        return redirect()->route('schedule')->with('success', 'Class scheduled successfully');
+        return redirect()->route('schedule')->with('success', $schedule->topic . ' schedule created successfully');
     }
 
     public function reschedule(Request $request)

@@ -96,7 +96,7 @@ export default function AttendancePage({ schedule }: AttendancePageProps) {
                         <ArrowLeft className="w-5 h-5" />
                     </button>
                     <div>
-                        <h1 className="text-2xl font-semibold text-gray-900">{schedule.unit.name}</h1>
+                        <h1 className="text-2xl font-semibold text-gray-900">{schedule.unit.name} - {schedule.topic}</h1>
                         <p className="text-sm text-gray-600">{formatDate(schedule.day, schedule.start_time, schedule.end_time)} • {schedule.venue}</p>
                     </div>
                 </div>

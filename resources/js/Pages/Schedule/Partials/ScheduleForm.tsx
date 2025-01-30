@@ -16,6 +16,7 @@ export default function ScheduleForm({ onClose, onSubmit, initialDate, units, co
     initialDate.setHours(initialDate.getHours() + 3);
     initialDate.setMinutes(0);
     const { data, setData, post, reset } = useForm({
+        topic: '',
         attendance_link: '',
         unit_id: 0,
         cohort_id: 0,
@@ -30,7 +31,7 @@ export default function ScheduleForm({ onClose, onSubmit, initialDate, units, co
         e.preventDefault();
         post(route('schedule.store'), {
             onFinish: () => {
-                reset('attendance_link', 'unit_id', 'cohort_id', 'day', 'start_time', 'end_time', 'venue', 'status');
+                reset('topic', 'attendance_link', 'unit_id', 'cohort_id', 'day', 'start_time', 'end_time', 'venue', 'status');
                 onClose();
             },
         });
@@ -50,6 +51,20 @@ export default function ScheduleForm({ onClose, onSubmit, initialDate, units, co
                 </div>
 
                 <form onSubmit={submit} className="p-6 space-y-4">
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="topic">
+                            Topic
+                        </label>
+                        <input
+                            type="text"
+                            required
+                            placeholder="Enter Topic"
+                            className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                            value={data.topic}
+                            onChange={e => setData(prev => ({ ...prev, topic: e.target.value }))}
+                        />
+                    </div>
                     <SearchableSelect
                         label="Unit"
                         placeholder="Select a unit"

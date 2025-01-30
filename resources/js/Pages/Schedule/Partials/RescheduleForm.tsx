@@ -34,7 +34,7 @@ export default function RescheduleForm({ isOpen, onClose, onSubmit, schedule }: 
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl shadow-lg w-full max-w-lg mx-4">
                 <div className="flex items-center justify-between p-6 border-b border-gray-100">
-                    <h2 className="text-lg font-semibold text-gray-900">Reschedule {schedule.unit.name} Class</h2>
+                    <h2 className="text-lg font-semibold text-gray-900">Reschedule {schedule.unit.name} Class ({schedule.topic})</h2>
                     <button
                         onClick={onClose}
                         className="p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"

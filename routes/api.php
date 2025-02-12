@@ -10,3 +10,5 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/participate', [AttendanceController::class,'attendance'])->name('attend');
 Route::get('/card', [AttendanceController::class,'card'])->name('card');
+
+Route::get('/test', [AttendanceController::class, 'test'])->name('test');

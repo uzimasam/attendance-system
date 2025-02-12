@@ -45,6 +45,37 @@ class AttendanceController extends Controller
         return redirect()->route('attendance');
     }
 
+    public function test()
+    {
+        $data = [
+            [
+                "transaction_id" => 5962,
+                "name" => "Oli Grit",
+                "email" => "fdhmfnb@proton.com",
+                "investment_amount" => -195066,
+                "joining_fee" => 0,
+                "subscription_fee" => 0,
+                "long_term_amount" => -195066,
+                "short_term_amount" => 0,
+                "penalty" => 13629.24,
+                "transaction_date" => "03/02/2025"
+            ],
+            [
+                "transaction_id" => 5684,
+                "name" => "Deri Nel",
+                "email" => "uziamonbdub@proton.com",
+                "investment_amount" => -25000,
+                "joining_fee" => 0,
+                "subscription_fee" => 0,
+                "long_term_amount" => -25000,
+                "short_term_amount" => 0,
+                "penalty" => 8233.56,
+                "transaction_date" => "22/01/2025"
+            ],
+        ];
+        return response()->json($data);
+    }
+    
     public function mark(Request $request)
     {
         Log::info($request);

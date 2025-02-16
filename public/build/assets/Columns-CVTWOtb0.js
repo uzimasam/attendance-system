@@ -1,0 +1,11 @@
+import{j as s,a as i}from"./app-Cvei605T.js";import{B as r}from"./button-CAu08THb.js";import{c as a}from"./createLucideIcon-0Hru7mWG.js";/**
+ * @license lucide-react v0.456.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const n=a("ArrowBigRightDash",[["path",{d:"M5 9v6",key:"158jrl"}],["path",{d:"M9 9h3V5l7 7-7 7v-4H9V9z",key:"1sg2xn"}]]);/**
+ * @license lucide-react v0.456.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const t=a("ArrowUpDown",[["path",{d:"m21 16-4 4-4-4",key:"f6ql7i"}],["path",{d:"M17 20V4",key:"1ejh1v"}],["path",{d:"m3 8 4-4 4 4",key:"11wl7u"}],["path",{d:"M7 4v16",key:"1glfcx"}]]),l=[{accessorKey:"registration_number",header:({column:e})=>s.jsxs(r,{variant:"ghost",size:"sm",onClick:()=>e.toggleSorting(e.getIsSorted()==="asc"),children:["Registration Number",s.jsx(t,{className:"ml-2 h-4 w-4"})]})},{accessorKey:"name",header:({column:e})=>s.jsxs(r,{variant:"ghost",size:"sm",onClick:()=>e.toggleSorting(e.getIsSorted()==="asc"),children:["Name",s.jsx(t,{className:"ml-2 h-4 w-4"})]})},{accessorKey:"school",header:({column:e})=>s.jsxs(r,{variant:"ghost",size:"sm",onClick:()=>e.toggleSorting(e.getIsSorted()==="asc"),children:["School",s.jsx(t,{className:"ml-2 h-4 w-4"})]})},{accessorKey:"program",header:({column:e})=>s.jsxs(r,{variant:"ghost",size:"sm",onClick:()=>e.toggleSorting(e.getIsSorted()==="asc"),children:["Program",s.jsx(t,{className:"ml-2 h-4 w-4"})]})},{accessorKey:"cohort",header:({column:e})=>s.jsxs(r,{variant:"ghost",size:"sm",onClick:()=>e.toggleSorting(e.getIsSorted()==="asc"),children:["Cohort",s.jsx(t,{className:"ml-2 h-4 w-4"})]})},{accessorKey:"attendance",header:({column:e})=>s.jsxs(r,{variant:"ghost",size:"sm",onClick:()=>e.toggleSorting(e.getIsSorted()==="asc"),children:["Attendance",s.jsx(t,{className:"ml-2 h-4 w-4"})]})},{id:"actions",header:"Actions",cell:({row:e})=>{const o=e.original;return s.jsxs(i,{href:`/students/${o.id}`,className:"flex items-center gap-2 px-3 py-1 text-sm font-medium text-gray-600 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors",children:["View",s.jsx(n,{className:"w-4 h-4"})]})}}];export{l as columns};

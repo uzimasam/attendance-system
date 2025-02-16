@@ -49,6 +49,11 @@ class Student extends Model
         return $this->hasMany(CohortStudent::class, 'student_id', 'id');
     }
 
+    public function getCurrentCohort()
+    {
+        return $this->cohortStudents()->orderBy('created_at', 'desc')->first();
+    }
+
     public function cohorts()
     {
         return $this->hasManyThrough(Cohort::class, CohortStudent::class, 'student_id', 'id', 'id', 'cohort_id');

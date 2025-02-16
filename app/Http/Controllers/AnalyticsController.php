@@ -106,13 +106,24 @@ class AnalyticsController extends Controller
     {
         $students = Student::all();
         $flagged = 0;
+        $flaggedStudents = [];
         foreach ($students as $student) {
             if($student->averageAttendance() < 80) {
                 $flagged++;
+                $flaggedStudents[] = [
+                    'registration_number' => $student->registration_number,
+                    'name' => $student->name,
+                    'school' => $student->getCurrentCohort()->cohort->program->school->code,
+                    'program' => $student->getCurrentCohort()->cohort->program->name,
+                    'cohort' => $student->getCurrentCohort()->cohort->code,
+                    'attendance' => number_format($student->averageAttendance(), 2).'%'
+                ];
             }
         }
+        // order by average attendance
         return [
             'total' => $students->count(),
+            'flaggedStudents' => $flaggedStudents,
             'flagged' => $flagged
         ];
     }
@@ -207,6 +218,7 @@ class AnalyticsController extends Controller
             'schoolCount' => School::count(),
             'programCount' => Program::count(),
             'flaggedStudentCount' => $studentAnalytics['flagged'],
+            'flaggedStudents' => $studentAnalytics['flaggedStudents'],
             'activeScheduleCount' => Schedule::where('status', 'active')
             ->where('status', 'active')
             ->where(function ($query) use ($currentDate, $currentTime) {

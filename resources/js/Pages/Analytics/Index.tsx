@@ -4,6 +4,8 @@ import { Bar, BarChart, CartesianGrid, ReferenceArea, ReferenceDot, ReferenceLin
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/Components/ui/chart';
+import { DataTable } from './FlaggedStudents/DataTable';
+import { columns } from './FlaggedStudents/Columns';
 
 interface AuthProps {
     readonly auth: {
@@ -12,6 +14,7 @@ interface AuthProps {
         };
     };
     readonly flaggedStudentCount: number;
+    readonly flaggedStudents: any;
     readonly studentCount: number;
     readonly todayScheduleCount: number;
     readonly unitCount: number;
@@ -38,6 +41,7 @@ function App({
     schoolCount,
     programCount,
     flaggedStudentCount,
+    flaggedStudents,
     activeScheduleCount,
     rateOfChange,
     schoolComparisonChartData,
@@ -84,6 +88,7 @@ function App({
     const chartData = schoolComparisonChartData;
 
     const chartConfig = schoolComparisonChartConfig satisfies ChartConfig;
+
     return (
         <>
             <Head title="Analytics" />
@@ -162,6 +167,10 @@ function App({
                             <ReferenceLine y={60} stroke="red" label={{ value: "60%", position: "insideTopRight", fill:"red", fontSize:12 }} />
                         </BarChart>
                     </ChartContainer>
+                </div>
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
+                    <h2 className="text-lg font-semibold text-gray-900 mb-4">Flagged Students</h2>
+                    <DataTable columns={columns} data={flaggedStudents} />
                 </div>
             </AuthenticatedLayout>
         </>

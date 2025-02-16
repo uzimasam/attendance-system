@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, BookOpen, CalendarCheck2, GraduationCap, ChartLine, Building2, Folders, Clock10 } from 'lucide-react';
+import { Users, BookOpen, CalendarCheck2, GraduationCap, ChartLine, Folders, Clock10, LucideUsersRound } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, ReferenceLine, YAxis } from 'recharts';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
@@ -18,7 +18,6 @@ interface AnalyticsProps {
     readonly studentCount: number;
     readonly todayScheduleCount: number;
     readonly unitCount: number;
-    readonly schoolCount: number;
     readonly programCount: number;
     readonly yesterdayScheduleCount: number;
     readonly averageAttendance: number;
@@ -26,8 +25,10 @@ interface AnalyticsProps {
     readonly lecturerCount: number;
     readonly activeScheduleCount: number;
     readonly rateOfChange: number;
-    readonly schoolComparisonChartData: any;
-    readonly schoolComparisonChartConfig: any;
+    readonly school: any;
+    readonly cohortCount: number;
+    readonly programComparisonChartData: any;
+    readonly programComparisonChartConfig: any;
 }
 
 function App({
@@ -38,14 +39,15 @@ function App({
     unitCount,
     todayScheduleCount,
     studentCount,
-    schoolCount,
     programCount,
     flaggedStudentCount,
     flaggedStudents,
     activeScheduleCount,
     rateOfChange,
-    schoolComparisonChartData,
-    schoolComparisonChartConfig,
+    school,
+    cohortCount,
+    programComparisonChartData,
+    programComparisonChartConfig,
     auth
 }: AnalyticsProps) {
     const scheduleTrend = todayScheduleCount - yesterdayScheduleCount;
@@ -83,13 +85,12 @@ function App({
         lecturerTrendColor = "text-green-600";
     }
 
-    const chartData = schoolComparisonChartData;
+    const chartData = programComparisonChartData;
 
-    const chartConfig = schoolComparisonChartConfig satisfies ChartConfig;
-
+    const chartConfig = programComparisonChartConfig satisfies ChartConfig;
     return (
         <>
-            <Head title="Analytics" />
+            <Head title={`${school.name} Analytics`} />
             <AuthenticatedLayout fullName={auth.user.name}>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                     <DashboardCard
@@ -121,16 +122,16 @@ function App({
                         trendColor='text-gray-600'
                     />
                     <DashboardCard
-                        title="Total Schools"
-                        value={schoolCount.toString()}
-                        icon={<Building2 className="w-6 h-6 text-amber-600" />}
+                        title="Total Programs"
+                        value={programCount.toString()}
+                        icon={<Folders className="w-6 h-6 text-amber-600" />}
                         trend=''
                         trendColor={scheduleTrendColor}
                     />
                     <DashboardCard
-                        title="Total Programs"
-                        value={programCount.toString()}
-                        icon={<Folders className="w-6 h-6 text-rose-600" />}
+                        title="Total Cohorts"
+                        value={cohortCount.toString()}
+                        icon={<LucideUsersRound className="w-6 h-6 text-rose-600" />}
                         trend=''
                         trendColor='text-gray-600'
                     />
@@ -150,7 +151,7 @@ function App({
                     />
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
-                    <h2 className="text-lg font-semibold text-gray-900 mb-4">School By School Attendance Comparison</h2>
+                    <h2 className="text-lg font-semibold text-gray-900 mb-4">Program By Program Attendance Comparison</h2>
                     <ChartContainer config={chartConfig} className='min-h[200-px] w-full'>
                         <BarChart accessibilityLayer data={chartData}>
                             <CartesianGrid vertical={false} />
@@ -160,9 +161,9 @@ function App({
                             {Object.keys(chartConfig).map((code) => (
                                 <Bar key={code} dataKey={code} fill={chartConfig[code].color} radius={4} />
                             ))}
-                            <ReferenceLine y={80} stroke="green" strokeDasharray="3 3" label={{ value: "80%", position: "insideTopRight", fill:"green", fontSize:12 }} />
-                            <ReferenceLine y={averageAttendance} stroke="grey" strokeDasharray="3 3" label={{ value: `${averageAttendance}%`, position: "insideTopRight", fill:"grey", fontSize:12 }} />
-                            <ReferenceLine y={60} stroke="red" label={{ value: "60%", position: "insideTopRight", fill:"red", fontSize:12 }} />
+                            <ReferenceLine y={80} stroke="green" strokeDasharray="3 3" label={{ value: "80%", position: "insideTopRight", fill: "green", fontSize: 12 }} />
+                            <ReferenceLine y={averageAttendance} stroke="grey" strokeDasharray="3 3" label={{ value: `${averageAttendance}%`, position: "insideTopRight", fill: "grey", fontSize: 12 }} />
+                            <ReferenceLine y={60} stroke="red" label={{ value: "60%", position: "insideTopRight", fill: "red", fontSize: 12 }} />
                         </BarChart>
                     </ChartContainer>
                 </div>

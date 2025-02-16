@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/school/store', [SchoolController::class, 'store'])->name('school.store');
     Route::group(['prefix' => 'analytics'], function () {
         Route::get('/', [AnalyticsController::class, 'index'])->name('analytics');
+        Route::get('/school/{code}', [AnalyticsController::class, 'school'])->name('analytics.school');
     });
 });
 

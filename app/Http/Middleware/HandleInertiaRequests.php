@@ -34,6 +34,7 @@ class HandleInertiaRequests extends Middleware
         $schools = School::with('programs.units.cohorts')->get()->map(function ($school) {
             return [
                 'id' => $school->id,
+                'code' => $school->code,
                 'name' => $school->name,
                 'programs' => $school->programs->map(function ($program) {
                     return [

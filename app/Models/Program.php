@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\AnalyticsController;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -78,19 +80,12 @@ class Program extends Model
             ->where('schedules.status', 'marked');
     }
 
-
-
     public function averageAttendance()
     {
-        $doneSchedules = $this->doneSchedules;
-        $percentagePresent = 0;
-        foreach ($doneSchedules as $schedule) {
-            $percentagePresent += $schedule->percentagePresent();
-        }
-        $total = $doneSchedules->count();
-        if ($total > 0) {
-            return number_format($percentagePresent / $total, 2);
-        }
-        return 100;
+        $dS = new Collection();
+        $this->doneSchedules->each(function ($schedule) use ($dS) {
+            $dS->push($schedule);
+        });
+        return AnalyticsController::calculateAverageAttendance($dS);
     }
 }

@@ -46,6 +46,7 @@ export default function AuthenticatedLayout({ fullName, children }: { fullName: 
     interface School {
         id: string;
         name: string;
+        code: string;
         programs: Program[] | [];
     }
 
@@ -162,6 +163,13 @@ export default function AuthenticatedLayout({ fullName, children }: { fullName: 
 
                             {activeSchool === school.id && (
                                 <div className="ml-4 mt-2 space-y-1">
+                                    <Link
+                                        href={route('analytics.school', school.code )}
+                                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${isActive('school') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-200'}`}
+                                    >
+                                        <HomeIcon className="w-4 h-4" />
+                                        {school.code} Overview
+                                    </Link>
                                     {Array.isArray(school.programs) && school.programs.map((program: Program) => (
                                         <div key={program.id}>
                                             <NavItem

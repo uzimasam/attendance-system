@@ -98,14 +98,13 @@ class User extends Authenticatable
         ->with('unit')
         ->with('cohort')
         ->where('status', 'active')
-            ->where('status', 'active')
-            ->where(function ($query) use ($currentDate, $currentTime) {
-                $query->whereDate('day', '>', $currentDate)
-                    ->orWhere(function ($query) use ($currentDate, $currentTime) {
-                        $query->whereDate('day', $currentDate)
-                            ->whereTime('start_time', '>', $currentTime);
-                    });
-            });
+        ->where(function ($query) use ($currentDate, $currentTime) {
+            $query->whereDate('day', '>', $currentDate)
+                ->orWhere(function ($query) use ($currentDate, $currentTime) {
+                    $query->whereDate('day', $currentDate)
+                        ->whereTime('start_time', '>', $currentTime);
+                });
+        });
     }
 
     public function inProgressSchedules()
@@ -149,7 +148,7 @@ class User extends Authenticatable
         $doneSchedules = $this->doneSchedules;
         $percentagePresent = 0;
         foreach ($doneSchedules as $schedule) {
-            $percentagePresent += $schedule->percentagePresent();
+            $percentagePresent += 100 - $schedule->percentageAbsent();
         }
         $total = $doneSchedules->count();
         if ($total > 0){

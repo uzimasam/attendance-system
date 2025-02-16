@@ -79,4 +79,18 @@ class Schedule extends Model
         $present = $this->attendances->where('attendance_status', 'present')->count();
         return $total > 0 ? ($present / $total) * 100 : 0;
     }
+
+    public function percentageAbsent()
+    {
+        $total = $this->attendances->count();
+        $absent = $this->attendances->where('attendance_status', 'absent')->count();
+        return $total > 0 ? ($absent / $total) * 100 : 0;
+    }
+
+    public function percentageExcused()
+    {
+        $total = $this->attendances->count();
+        $excused = $this->attendances->where('attendance_status', 'excused')->count();
+        return $total > 0 ? ($excused / $total) * 100 : 0;
+    }
 }

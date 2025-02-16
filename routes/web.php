@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
@@ -51,6 +52,9 @@ Route::middleware('auth')->group(function () {
     });
     Route::get('/setup', [ProgramController::class, 'setup'])->name('setup');
     Route::post('/school/store', [SchoolController::class, 'store'])->name('school.store');
+    Route::group(['prefix' => 'analytics'], function () {
+        Route::get('/', [AnalyticsController::class, 'index'])->name('analytics');
+    });
 });
 
 require __DIR__.'/auth.php';

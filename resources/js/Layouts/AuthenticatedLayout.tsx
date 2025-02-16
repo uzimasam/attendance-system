@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, LayoutDashboard, Calendar, UserCircle, LogOut, School, BookOpen, Users, ChevronRight, Settings2Icon, HomeIcon, BookUser, ContactRound } from 'lucide-react';
+import { Menu, LayoutDashboard, Calendar, UserCircle, LogOut, School, BookOpen, Users, ChevronRight, Settings2Icon, HomeIcon, BookUser, ContactRound, BarChartHorizontal } from 'lucide-react';
 import axios from 'axios';
 import { Link, usePage } from '@inertiajs/react';
 
@@ -141,6 +141,14 @@ export default function AuthenticatedLayout({ fullName, children }: { fullName: 
                     </Link>
 
                     <div className="my-4 border-t border-gray-200"></div>
+
+                    <Link
+                        href={route('analytics')}
+                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${isActive('analytics') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-200'}`}
+                    >
+                        <BarChartHorizontal className="w-5 h-5" />
+                        Analytics
+                    </Link>
 
                     {Array.isArray(schools) && schools.map((school: School) => (
                         <div key={school.id}>

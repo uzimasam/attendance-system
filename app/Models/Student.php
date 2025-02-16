@@ -63,4 +63,41 @@ class Student extends Model
     {
         return $this->hasManyThrough(Schedule::class, Attendance::class, 'student_id', 'id', 'id', 'schedule_id');
     }
+
+    public function markedSchedule()
+    {
+        return $this->schedules->where('status', 'marked');
+    }
+
+    public function markedAttendance()
+    {
+        return $this->attendances->where('schedule.status', 'marked');
+    }
+
+    public function presentAttendance()
+    {
+        return $this->markedAttendance()->where('attendance_status', 'present');
+    }
+
+    public function absentAttendance()
+    {
+        return $this->markedAttendance()->where('attendance_status', 'absent');
+    }
+
+    public function excusedAttendance()
+    {
+        return $this->markedAttendance()->where('attendance_status', 'excused');
+    }
+
+    public function averageAttendance()
+    {
+        $total = $this->markedAttendance()->count();
+        $absent = $this->absentAttendance()->count();
+
+        if ($total == 0) {
+            return 100;
+        }
+
+        return 100 - (($absent / $total) * 100);
+    }
 }

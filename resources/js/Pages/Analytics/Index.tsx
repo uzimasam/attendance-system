@@ -1,7 +1,9 @@
 import React from 'react';
 import { Users, BookOpen, CalendarCheck2, GraduationCap, ChartLine, Building2, Folders, Clock10 } from 'lucide-react';
+import { Bar, BarChart, CartesianGrid, ReferenceArea, ReferenceDot, ReferenceLine, XAxis, YAxis } from 'recharts';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/Components/ui/chart';
 
 interface AuthProps {
     readonly auth: {
@@ -21,6 +23,8 @@ interface AuthProps {
     readonly lecturerCount: number;
     readonly activeScheduleCount: number;
     readonly rateOfChange: number;
+    readonly schoolComparisonChartData: any;
+    readonly schoolComparisonChartConfig: any;
 }
 
 function App({
@@ -36,6 +40,8 @@ function App({
     flaggedStudentCount,
     activeScheduleCount,
     rateOfChange,
+    schoolComparisonChartData,
+    schoolComparisonChartConfig,
     auth
 }: AuthProps) {
     // get the difference between today's and yesterday's schedule count
@@ -74,6 +80,10 @@ function App({
         lecturerTrendText = `Average attendance is ${lecturerAverageAttendance}%`;
         lecturerTrendColor = "text-green-600";
     }
+
+    const chartData = schoolComparisonChartData;
+
+    const chartConfig = schoolComparisonChartConfig satisfies ChartConfig;
     return (
         <>
             <Head title="Analytics" />
@@ -135,6 +145,23 @@ function App({
                         trend=''
                         trendColor='text-gray-600'
                     />
+                </div>
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
+                    <h2 className="text-lg font-semibold text-gray-900 mb-4">School By School Attendance Comparison</h2>
+                    <ChartContainer config={chartConfig} className='min-h[200-px] w-full'>
+                        <BarChart accessibilityLayer data={chartData}>
+                            <CartesianGrid vertical={false} />
+                            <YAxis tickLine={false} axisLine={false} domain={[0, 100]} ticks={[0, 20, 40, 60, 80, 100]} />
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                            <ChartLegend content={<ChartLegendContent />} />
+                            {Object.keys(chartConfig).map((code) => (
+                                <Bar key={code} dataKey={code} fill={chartConfig[code].color} radius={4} />
+                            ))}
+                            <ReferenceLine y={80} stroke="green" strokeDasharray="3 3" label={{ value: "80%", position: "insideTopRight", fill:"green", fontSize:12 }} />
+                            <ReferenceLine y={averageAttendance} stroke="grey" strokeDasharray="3 3" label={{ value: `${averageAttendance}%`, position: "insideTopRight", fill:"grey", fontSize:12 }} />
+                            <ReferenceLine y={60} stroke="red" label={{ value: "60%", position: "insideTopRight", fill:"red", fontSize:12 }} />
+                        </BarChart>
+                    </ChartContainer>
                 </div>
             </AuthenticatedLayout>
         </>

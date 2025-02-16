@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\AnalyticsController;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -55,5 +57,20 @@ class School extends Model
     public function programs()
     {
         return $this->hasMany(Program::class, 'school_id', 'id');
+    }
+
+    public function averageAttendance()
+    {
+        $doneSchedules = new Collection();
+
+        $this->programs->load('schedules')->each(function ($program) use ($doneSchedules) {
+            $program->schedules->each(function ($schedule) use ($doneSchedules) {
+                if ($schedule->status === 'marked') {
+                    $doneSchedules->push($schedule);
+                }
+            });
+        });
+
+        return AnalyticsController::calculateAverageAttendance($doneSchedules);
     }
 }

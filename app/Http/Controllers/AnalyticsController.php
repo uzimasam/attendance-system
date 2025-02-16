@@ -16,7 +16,36 @@ use Illuminate\Database\Eloquent\Collection;
 class AnalyticsController extends Controller
 {
     private const TIME_FORMAT = 'H:i:s';
-    private function calculateAverageAttendance(Collection $doneSchedules): float
+
+    public static function generateBlueShades(int $count, int $minBrightness = 90, int $maxBrightness = 255): array
+    {
+        $shades = [];
+        $step = ($maxBrightness - $minBrightness) / ($count - 1);
+
+        for ($i = 0; $i < $count; $i++) {
+            $brightness = round($minBrightness + ($step * $i));
+            $red = round($brightness * 0.3);
+            $green = round($brightness * 0.5);
+            $blue = $brightness;
+
+            $shades[] = sprintf("#%02x%02x%02x", $red, $green, $blue);
+        }
+
+        return $shades;
+    }
+
+    public static function randomBlueShade(int $minBrightness = 90, int $maxBrightness = 255): string
+    {
+        $brightness = rand($minBrightness, $maxBrightness);
+        
+        $red = round($brightness * 0.3);
+        $green = round($brightness * 0.5);
+        $blue = $brightness;
+
+        return sprintf("#%02x%02x%02x", $red, $green, $blue);
+    }
+
+    public static function calculateAverageAttendance(Collection $doneSchedules): float
     {
         if ($doneSchedules->isEmpty()) {
             return 100;
@@ -106,6 +135,52 @@ class AnalyticsController extends Controller
 
     }
 
+    private function getSchoolComparisonChart(): array
+    {
+        $schools = School::all();
+        $schoolData = [];
+        $shades = self::generateBlueShades($schools->count());
+
+        foreach ($schools as $index => $school) {
+            $schoolData[] = [
+                'code' => $school->code,
+                'attendance' => $school->averageAttendance(),
+                'color' => $shades[$index]
+            ];
+        }
+
+        return $schoolData;
+    }
+
+    private function transformToChartData(array $data): array 
+    {
+        $chartData = [];
+        $dataPoint = ['month' => 'All-Time'];
+        
+        foreach ($data as $school) {
+            $code = strtolower($school['code']);
+            $dataPoint[$code] = $school['attendance'];
+        }
+        
+        $chartData[] = $dataPoint;
+        
+        return $chartData;
+    }
+
+    private function generateChartConfig(array $schoolData): array 
+    {
+        $chartConfig = [];
+        
+        foreach ($schoolData as $school) {
+            $code = strtolower($school['code']);
+            $chartConfig[$code] = [
+                'label' => $code,
+                'color' => $school['color']
+            ];
+        }
+        return $chartConfig;
+    }
+
     public function index()
     {
         $scheduleAnalytics = $this->getScheduleAnalytics();
@@ -141,6 +216,8 @@ class AnalyticsController extends Controller
                             ->whereTime('start_time', '>', $currentTime);
                     });
             })->count(),
+            'schoolComparisonChartData' => $this->transformToChartData($this->getSchoolComparisonChart()),
+            'schoolComparisonChartConfig' => $this->generateChartConfig($this->getSchoolComparisonChart()),
             'rateOfChange' => number_format($rateOfChange, 2)
         ]);
     }

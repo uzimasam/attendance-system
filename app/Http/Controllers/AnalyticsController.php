@@ -111,6 +111,7 @@ class AnalyticsController extends Controller
             if($student->averageAttendance() < 80) {
                 $flagged++;
                 $flaggedStudents[] = [
+                    'id' => $student->id,
                     'registration_number' => $student->registration_number,
                     'name' => $student->name,
                     'school' => $student->getCurrentCohort()->cohort->program->school->code,

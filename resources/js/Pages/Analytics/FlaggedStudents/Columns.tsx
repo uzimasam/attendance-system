@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowBigRightDash, ArrowUpDown } from "lucide-react";
 
 export type FlaggedStudent = {
+    id: number;
     registration_number: string;
     student_name: string;
     school: string;
@@ -87,7 +88,7 @@ export const columns: ColumnDef<FlaggedStudent>[] = [
 
             return (
                 <Link
-                    href={`/students/${student.registration_number}`}
+                    href={`/students/${student.id}`}
                     className="flex items-center gap-2 px-3 py-1 text-sm font-medium text-gray-600 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                     View

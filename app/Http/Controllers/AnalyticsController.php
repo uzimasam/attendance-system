@@ -156,7 +156,17 @@ class AnalyticsController extends Controller
         $students = Student::all();
         $flagged = 0;
         $flaggedStudents = [];
+        $allStudents = [];
         foreach ($students as $student) {
+            $allStudents[] = [
+                'id' => $student->id,
+                'registration_number' => $student->registration_number,
+                'name' => $student->name,
+                'school' => $student->getCurrentCohort()->cohort->program->school->code,
+                'program' => $student->getCurrentCohort()->cohort->program->name,
+                'cohort' => $student->getCurrentCohort()->cohort->code,
+                'attendance' => number_format($student->averageAttendance(), 2).'%'
+            ];
             if($student->averageAttendance() < 80) {
                 $flagged++;
                 $flaggedStudents[] = [
@@ -173,6 +183,7 @@ class AnalyticsController extends Controller
         // order by average attendance
         return [
             'total' => $students->count(),
+            'allStudents' => $allStudents,
             'flaggedStudents' => $flaggedStudents,
             'flagged' => $flagged
         ];
@@ -428,6 +439,14 @@ class AnalyticsController extends Controller
             'programComparisonChartConfig' => $this->generateChartConfig($programComparison),
             'rateOfChange' => number_format($rateOfChange, 2),
             'school' => $school
+        ]);
+    }
+
+    public function students()
+    {
+        $studentAnalytics = $this->getStudentAnalytics();
+        return Inertia::render('Analytics/Students', [
+            'studentsData' => $studentAnalytics['allStudents'],
         ]);
     }
 

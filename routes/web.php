@@ -57,6 +57,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/school/{code}', [AnalyticsController::class, 'school'])->name('analytics.school');
         Route::get('/program/{code}', [AnalyticsController::class, 'program'])->name('analytics.program');
         Route::get('/unit/{code}', [AnalyticsController::class, 'unit'])->name('analytics.unit');
+        Route::get('/students', [AnalyticsController::class, 'students'])->name('analytics.students');
         Route::get('/student/{id}', [AnalyticsController::class, 'student'])->name('analytics.student');
     });
 });

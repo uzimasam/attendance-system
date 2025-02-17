@@ -6,6 +6,7 @@ import AttendanceStats from './AttendanceStats';
 import ScannerInput from './ScannerInput';
 import FinalizeAttendance from './FinalizeAttendance';
 import axios from 'axios';
+import { Link } from '@inertiajs/react';
 
 interface AttendancePageProps {
     readonly schedule: Schedule;
@@ -100,12 +101,12 @@ export default function AttendancePage({ schedule }: AttendancePageProps) {
                         <p className="text-sm text-gray-600">{formatDate(schedule.day, schedule.start_time, schedule.end_time)} • {schedule.venue}</p>
                     </div>
                 </div>
-                <button
-                    onClick={() => setShowFinalize(true)}
+                <Link
+                    href={route('dashboard')}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                     Finalize Attendance
-                </button>
+                </Link> 
             </div>
 
             <AttendanceStats

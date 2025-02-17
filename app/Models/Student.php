@@ -172,15 +172,17 @@ class Student extends Model
             } else {
                 $attendance_status = 'unmarked';
             }
-            $data[] = [
-                'unit' => $schedule->unit->name,
-                'cohort' => $schedule->cohort->name,
-                'topic' => $schedule->topic ?? 'N/A',
-                'day' => date('jS M, Y', strtotime($schedule->day)),
-                'time' => date('h:i A', strtotime($schedule->start_time)) . ' - ' . date('h:i A', strtotime($schedule->end_time)),
-                'venue' => $schedule->venue,
-                'status' => ucfirst($attendance_status)
-            ];
+            if ($attendance_status != 'pending') {
+                $data[] = [
+                    'unit' => $schedule->unit->name,
+                    'cohort' => $schedule->cohort->name,
+                    'topic' => $schedule->topic ?? 'N/A',
+                    'day' => date('jS M, Y', strtotime($schedule->day)),
+                    'time' => date('h:i A', strtotime($schedule->start_time)) . ' - ' . date('h:i A', strtotime($schedule->end_time)),
+                    'venue' => $schedule->venue,
+                    'status' => ucfirst($attendance_status)
+                ];
+            }
         }
         return $data;
     }

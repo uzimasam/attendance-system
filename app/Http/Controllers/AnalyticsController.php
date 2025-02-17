@@ -445,7 +445,7 @@ class AnalyticsController extends Controller
 
         return Inertia::render('Analytics/Student', [
             'student' => $student,
-            'averageAttendance' => $averageAttendance,
+            'averageAttendance' => number_format($averageAttendance, 2),
             'yesterdayScheduleCount' => $student->schedules()->whereDate('day', Carbon::yesterday())->count(),
             'unitCount' => $student->units()->count(),
             'todayScheduleCount' => $student->schedules()->whereDate('day', Carbon::today())->count(),

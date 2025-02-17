@@ -154,7 +154,7 @@ class Student extends Model
         $flagged = [];
         foreach ($units as $unit) {
             $average = $this->averageUnitAttendance($unit->id);
-            if ($average < 70) {
+            if ($average < 80) {
                 $flagged[] = $unit;
             }
         }

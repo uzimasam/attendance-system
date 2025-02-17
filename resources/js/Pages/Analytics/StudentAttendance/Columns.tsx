@@ -1,100 +1,81 @@
 import { Button } from "@/Components/ui/button";
-import { Link } from "@inertiajs/react";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowBigRightDash, ArrowUpDown } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 
 export type FlaggedStudent = {
-    id: number;
-    registration_number: string;
-    student_name: string;
-    school: string;
-    program: string;
-    cohort: string;
-    attendance: string;
+    day: string;
+    time: string;
+    venue: string;
+    topic: string;
+    unit: string;
+    status: string;
 };
 
 export const columns: ColumnDef<FlaggedStudent>[] = [
     {
-        accessorKey: 'registration_number',
+        accessorKey: 'day',
         header: ({ column }) => {
             return (
                 <Button variant="ghost" size="sm" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    Registration Number
+                    Day
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
     },
     {
-        accessorKey: 'name',
+        accessorKey: 'time',
         header: ({ column }) => {
             return (
                 <Button variant="ghost" size="sm" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    Name
+                    Time
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
     },
     {
-        accessorKey: 'school',
+        accessorKey: 'venue',
         header: ({ column }) => {
             return (
                 <Button variant="ghost" size="sm" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    School
+                    Venue
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
     },
     {
-        accessorKey: 'program',
+        accessorKey: 'topic',
         header: ({ column }) => {
             return (
                 <Button variant="ghost" size="sm" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    Program
+                    Topic
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
     },
     {
-        accessorKey: 'cohort',
+        accessorKey: 'unit',
         header: ({ column }) => {
             return (
                 <Button variant="ghost" size="sm" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    Cohort
+                    Unit
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
     },
     {
-        accessorKey: 'attendance',
+        accessorKey: 'status',
         header: ({ column }) => {
             return (
                 <Button variant="ghost" size="sm" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    Attendance
+                    Status
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
-    },
-    {
-        id: 'actions',
-        header: 'Actions',
-        cell: ({ row }) => {
-            const student = row.original;
-
-            return (
-                <Link
-                    href={route('analytics.student', student.id)}
-                    className="flex items-center gap-2 px-3 py-1 text-sm font-medium text-gray-600 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                    View
-                    <ArrowBigRightDash className="w-4 h-4" />
-                </Link>
-            )
-        }
     }
 ];

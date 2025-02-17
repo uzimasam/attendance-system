@@ -55,6 +55,9 @@ Route::middleware('auth')->group(function () {
     Route::group(['prefix' => 'analytics'], function () {
         Route::get('/', [AnalyticsController::class, 'index'])->name('analytics');
         Route::get('/school/{code}', [AnalyticsController::class, 'school'])->name('analytics.school');
+        Route::get('/program/{code}', [AnalyticsController::class, 'program'])->name('analytics.program');
+        Route::get('/unit/{code}', [AnalyticsController::class, 'unit'])->name('analytics.unit');
+        Route::get('/student/{id}', [AnalyticsController::class, 'student'])->name('analytics.student');
     });
 });
 

@@ -31,7 +31,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         <div>
             <div className="flex items-center py-4">
             <Input
-                    placeholder="Filter flagged students"
+                    placeholder="Search to filter data..."
                     value={globalFilter}
                     onChange={(event) => setGlobalFilter(event.target.value)}
                     className="max-w-sm"

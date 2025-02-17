@@ -105,4 +105,73 @@ class Student extends Model
 
         return 100 - (($absent / $total) * 100);
     }
+
+    public function previousWeekAverageAttendance()
+    {
+        $date = now()->subWeek();
+        $total = $this->markedAttendance()->where('created_at', '<=', $date)->count();
+        $absent = $this->absentAttendance()->where('created_at', '<=', $date)->count();
+
+        if ($total == 0) {
+            return 100;
+        }
+
+        return 100 - (($absent / $total) * 100);
+    }
+
+    public function units()
+    {
+        $scheduleIds = $this->schedules->pluck('unit_id');
+        $scheduleIds = $scheduleIds->unique();
+        return Unit::whereIn('id', $scheduleIds)->get();
+    }
+
+    public function averageUnitAttendance($unit_id)
+    {
+        $total = $this->markedAttendance()->where('unit_id', $unit_id)->count();
+        $absent = $this->absentAttendance()->where('unit_id', $unit_id)->count();
+
+        if ($total == 0) {
+            return 100;
+        }
+
+        return 100 - (($absent / $total) * 100);
+    }
+
+    public function flaggedUnits()
+    {
+        $units = $this->units();
+        $flagged = [];
+        foreach ($units as $unit) {
+            $average = $this->averageUnitAttendance($unit->id);
+            if ($average < 70) {
+                $flagged[] = $unit;
+            }
+        }
+        return $flagged;
+    }
+
+    public function scheduleData()
+    {
+        $data = [];
+        $schedules = $this->schedules;
+        foreach ($schedules as $schedule) {
+            $attendance = $this->attendances()->where('schedule_id', $schedule->id)->first();
+            if ($attendance) {
+                $attendance_status = $attendance->attendance_status;
+            } else {
+                $attendance_status = 'unmarked';
+            }
+            $data[] = [
+                'unit' => $schedule->unit->name,
+                'cohort' => $schedule->cohort->name,
+                'topic' => $schedule->topic ?? 'N/A',
+                'day' => date('jS M, Y', strtotime($schedule->day)),
+                'time' => date('h:i A', strtotime($schedule->start_time)) . ' - ' . date('h:i A', strtotime($schedule->end_time)),
+                'venue' => $schedule->venue,
+                'status' => ucfirst($attendance_status)
+            ];
+        }
+        return $data;
+    }
 }

@@ -278,6 +278,23 @@ class AnalyticsController extends Controller
         return $programData;
     }
 
+    private function getUnitComparisonForStudentChart(Student $student): array
+    {
+        $units = $student->units();
+        $unitData = [];
+        $shades = self::generateBlueShades($units->count());
+
+        foreach ($units as $index => $unit) {
+            $unitData[] = [
+                'code' => $unit->code,
+                'attendance' => $student->averageUnitAttendance($unit->id),
+                'color' => $shades[$index]
+            ];
+        }
+
+        return $unitData;
+    }
+
     private function transformToChartData(array $data): array 
     {
         $chartData = [];
@@ -410,6 +427,34 @@ class AnalyticsController extends Controller
             'programComparisonChartConfig' => $this->generateChartConfig($programComparison),
             'rateOfChange' => number_format($rateOfChange, 2),
             'school' => $school
+        ]);
+    }
+
+    public function student($id)
+    {
+        $student = Student::findOrFail($id);
+        $studentUnitComparison = $this->getUnitComparisonForStudentChart($student);
+        $averageAttendance = $student->averageAttendance();
+        $doneByLastWeekAndBefore = $student->previousWeekAverageAttendance();
+        $averageAttendanceDifference = $averageAttendance - $doneByLastWeekAndBefore;
+        if ($doneByLastWeekAndBefore == 0) {
+            $rateOfChange = 0;
+        } else {
+            $rateOfChange = $averageAttendanceDifference / $doneByLastWeekAndBefore * 100;
+        }
+
+        return Inertia::render('Analytics/Student', [
+            'student' => $student,
+            'averageAttendance' => $averageAttendance,
+            'yesterdayScheduleCount' => $student->schedules()->whereDate('day', Carbon::yesterday())->count(),
+            'unitCount' => $student->units()->count(),
+            'todayScheduleCount' => $student->schedules()->whereDate('day', Carbon::today())->count(),
+            'rateOfChange' => $rateOfChange,
+            'activeScheduleCount' => $student->schedules()->where('status', 'active')->count(),
+            'unitComparisonChartData' => $this->transformToChartData($studentUnitComparison),
+            'unitComparisonChartConfig' => $this->generateChartConfig($studentUnitComparison),
+            'scheduleData' => $student->scheduleData(),
+            'flaggedUnitCount' => count($student->flaggedUnits())
         ]);
     }
 }

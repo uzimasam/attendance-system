@@ -205,9 +205,9 @@ class AnalyticsController extends Controller
                     'id' => $student->id,
                     'registration_number' => $student->registration_number,
                     'name' => $student->name,
-                    'school' => $student->getCurrentCohort()->cohort->program->school->code,
-                    'program' => $student->getCurrentCohort()->cohort->program->name,
-                    'cohort' => $student->getCurrentCohort()->cohort->code,
+                    'school' => $student->getCurrentCohortBySchool($school->id)->cohort->program->school->code,
+                    'program' => $student->getCurrentCohortBySchool($school->id)->cohort->program->name,
+                    'cohort' => $student->getCurrentCohortBySchool($school->id)->cohort->code,
                     'attendance' => number_format($student->averageAttendance(), 2).'%'
                 ];
             }

@@ -57,9 +57,14 @@ class Program extends Model
 
     public function students()
     {
-        return Student::whereHas('cohorts', function ($query) {
-            $query->where('program_id', $this->id);
-        })->distinct('id')->get();
+        $cohorts = $this->cohorts;
+        $students = new Collection();
+        $cohorts->each(function ($cohort) use ($students) {
+            $cohort->students->each(function ($student) use ($students) {
+                $students->push($student);
+            });
+        });
+        return $students;
     }
 
     public function schedules()

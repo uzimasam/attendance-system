@@ -54,6 +54,24 @@ class Student extends Model
         return $this->cohortStudents()->orderBy('created_at', 'asc')->first();
     }
 
+    public function getCurrentCohortBySchool($school_id)
+    {
+        $cohort = null;
+        $programs = Program::where('school_id', $school_id)->get();
+        foreach ($programs as $program) {
+            $cohort = $this->cohortStudents()->whereHas('cohort', function ($query) use ($program) {
+                $query->where('program_id', $program->id);
+            })->orderBy('created_at', 'asc')->first();
+            if ($cohort) {
+                break;
+            }
+        }
+        if ($cohort) {
+            return $cohort;
+        }
+        return $this->cohortStudents()->orderBy('created_at', 'asc')->first();
+    }
+
     public function cohorts()
     {
         return $this->hasManyThrough(Cohort::class, CohortStudent::class, 'student_id', 'id', 'id', 'cohort_id');

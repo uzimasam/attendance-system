@@ -128,8 +128,18 @@ class Student extends Model
 
     public function averageUnitAttendance($unit_id)
     {
-        $total = $this->markedAttendance()->where('unit_id', $unit_id)->count();
-        $absent = $this->absentAttendance()->where('unit_id', $unit_id)->count();
+        $markedUnitSchedules = $this->markedSchedule()->where('unit_id', $unit_id);
+        $total = 0;
+        $absent = 0;
+        foreach ($markedUnitSchedules as $schedule) {
+            $attendance = $this->attendances()->where('schedule_id', $schedule->id)->first();
+            if ($attendance) {
+                $total++;
+                if ($attendance->attendance_status == 'absent') {
+                    $absent++;
+                }
+            }
+        }
 
         if ($total == 0) {
             return 100;

@@ -278,8 +278,9 @@ class AnalyticsController extends Controller
         return $programData;
     }
 
-    private function getUnitComparisonForStudentChart(Student $student): array
+    private function getUnitComparisonForStudentChart($id): array
     {
+        $student = Student::findOrFail($id);
         $units = $student->units();
         $unitData = [];
         $shades = self::generateBlueShades($units->count());
@@ -433,7 +434,7 @@ class AnalyticsController extends Controller
     public function student($id)
     {
         $student = Student::findOrFail($id);
-        $studentUnitComparison = $this->getUnitComparisonForStudentChart($student);
+        $studentUnitComparison = $this->getUnitComparisonForStudentChart($id);
         $averageAttendance = $student->averageAttendance();
         $doneByLastWeekAndBefore = $student->previousWeekAverageAttendance();
         $averageAttendanceDifference = $averageAttendance - $doneByLastWeekAndBefore;

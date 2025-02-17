@@ -151,6 +151,13 @@ export default function AuthenticatedLayout({ fullName, children }: { fullName: 
                         Analytics
                     </Link>
 
+                    <Link
+                        href={route('analytics.students')}
+                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${isActive('analytics') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-200'}`}
+                    >
+                        <BookUser className='w-5 h-5' />
+                        Student Reports
+                    </Link>
                     {Array.isArray(schools) && schools.map((school: School) => (
                         <div key={school.id}>
                             <NavItem

@@ -51,7 +51,7 @@ class Student extends Model
 
     public function getCurrentCohort()
     {
-        return $this->cohortStudents()->orderBy('created_at', 'desc')->last();
+        return $this->cohortStudents()->orderBy('created_at', 'asc')->first();
     }
 
     public function cohorts()
